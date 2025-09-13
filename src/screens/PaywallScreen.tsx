@@ -15,6 +15,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { SvgXml } from 'react-native-svg';
 import { colors } from '../theme/colors';
+import { storage } from '../services/storage';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -180,14 +181,36 @@ const PaywallScreen = () => {
     });
   };
 
-  const handleSubscribe = () => {
-    // Basit navigation - ana sayfaya git
-    console.log('Subscribe tapped');
+  const handleSubscribe = async () => {
+    try {
+      // Onboarding'i tamamlandı olarak işaretle
+      await storage.setOnboardingCompleted(true);
+      console.log('Subscribe tapped - Onboarding completed');
+      
+      // HomeScreen'e git
+      (navigation as any).reset({
+        index: 0,
+        routes: [{ name: 'HomeScreen' }],
+      });
+    } catch (error) {
+      console.error('Subscribe işlemi sırasında hata:', error);
+    }
   };
 
-  const handleClose = () => {
-    // LoserPaywallScreen'e git
-    console.log('Close tapped');
+  const handleClose = async () => {
+    try {
+      // Onboarding'i tamamlandı olarak işaretle (kapatsa da tamamlanmış sayılsın)
+      await storage.setOnboardingCompleted(true);
+      console.log('Close tapped - Onboarding completed');
+      
+      // HomeScreen'e git
+      (navigation as any).reset({
+        index: 0,
+        routes: [{ name: 'HomeScreen' }],
+      });
+    } catch (error) {
+      console.error('Close işlemi sırasında hata:', error);
+    }
   };
 
   return (
