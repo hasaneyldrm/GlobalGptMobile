@@ -9,18 +9,34 @@ import { StatusBar } from 'react-native';
 import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
+import { useState } from 'react';
 import FirstScreen from './src/onboarding/FirstScreen';
-import { colors } from './src/theme/colors';
+import NameScreen from './src/onboarding/NameScreen';
 
 function App() {
+  const [currentScreen, setCurrentScreen] = useState<'first' | 'name'>('first');
+
+  const handleNavigateToName = () => {
+    setCurrentScreen('name');
+  };
+
+  const handleComplete = () => {
+    // Burada ana uygulamaya yönlendirme yapılabilir
+    console.log('Onboarding completed!');
+  };
+
   return (
     <SafeAreaProvider>
       <StatusBar 
-        barStyle="light-content" 
-        backgroundColor={colors.background}
+        barStyle="dark-content" 
+        backgroundColor="#FFFFFF"
         translucent={false}
       />
-      <FirstScreen />
+      {currentScreen === 'first' ? (
+        <FirstScreen onNavigateToName={handleNavigateToName} />
+      ) : (
+        <NameScreen onComplete={handleComplete} />
+      )}
     </SafeAreaProvider>
   );
 }
