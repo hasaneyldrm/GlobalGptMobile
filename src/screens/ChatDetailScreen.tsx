@@ -13,6 +13,7 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { addMessage } from '../store/chatSlice';
@@ -38,6 +39,7 @@ interface ChatDetailScreenProps {
 const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const scrollViewRef = useRef<ScrollView>(null);
+  const insets = useSafeAreaInsets();
   const { contactId } = route.params;
   
   const { contacts, chatHistories, activeContactId } = useSelector((state: RootState) => state.chat);
@@ -172,7 +174,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
       
       {/* Header */}
@@ -252,7 +254,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
         ref={scrollViewRef}
         style={styles.messagesContainer}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.messagesContent}
+        contentContainerStyle={[styles.messagesContent, { paddingBottom: 90 + insets.bottom }]}
       >
         {messages.length === 0 ? (
           <View style={styles.emptyState}>
@@ -270,7 +272,8 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
       {/* Input Area */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.inputContainer}
+        style={[styles.inputContainer, { bottom: insets.bottom + 80 }]} // Tab bar height + safe area
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <View style={styles.inputRow}>
           <TextInput
@@ -294,7 +297,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -428,6 +431,9 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   inputContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
     backgroundColor: colors.surface,
     borderTopWidth: 1,
     borderTopColor: colors.secondary,
