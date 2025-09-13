@@ -239,7 +239,7 @@ const SettingsScreen = () => {
             </View>
             <SettingItem 
               title="Geliştirici Kaynakları" 
-              onPress={() => Alert.alert('Geliştirici', 'Bu özellik yakında gelecek')} 
+              onPress={() => navigation.navigate('DeveloperResources' as any)} 
             />
           </View>
         )}

@@ -18,6 +18,7 @@ import ThemeScreen from './src/screens/ThemeScreen';
 import LoadingScreen from './src/screens/LoadingScreen';
 import PaywallScreen from './src/screens/PaywallScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import DeveloperResourcesScreen from './src/screens/DeveloperResourcesScreen';
 import TabNavigator from './src/navigation/TabNavigator';
 import { ThemeProvider } from './src/services/ThemeContext';
 import { colors } from './src/theme/colors';
@@ -90,6 +91,7 @@ function App() {
             <Stack.Screen name="Loading" component={LoadingScreen} />
             <Stack.Screen name="Paywall" component={PaywallScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="DeveloperResources" component={DeveloperResourcesScreen} />
             <Stack.Screen name="MainTabs" component={TabNavigator} />
             <Stack.Screen name="Theme" component={ThemeScreen} />
           </Stack.Navigator>
