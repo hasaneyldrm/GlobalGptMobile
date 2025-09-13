@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,10 @@ import {
   TextInput,
   StatusBar,
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { colors } from '../theme/colors';
 
 const { width, height } = Dimensions.get('window');
@@ -26,6 +29,20 @@ interface Props {
 
 const NameScreen: React.FC<Props> = ({ navigation }) => {
   const [name, setName] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<TextInput>(null);
+
+  // Screen'e gelindiğinde klavyeyi otomatik aç
+  useFocusEffect(
+    React.useCallback(() => {
+      // Kısa bir gecikme ile focus yap (animasyon tamamlansın diye)
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }, [])
+  );
 
   const handleContinue = () => {
     if (name.trim()) {
@@ -39,47 +56,62 @@ const NameScreen: React.FC<Props> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       
-      <View style={styles.content}>
-        {/* Header Text */}
-        <View style={styles.textContainer}>
-          <Text style={styles.welcomeText}>Merhaba! 👋</Text>
-          <Text style={styles.descriptionText}>
-            Seni nasıl çağıralım? Adını öğrenmek istiyoruz.
-          </Text>
-        </View>
-
-        {/* Input Container */}
-        <View style={styles.inputSection}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Adınızı yazın..."
-              placeholderTextColor={colors.textMuted}
-              value={name}
-              onChangeText={setName}
-              autoFocus
-              selectionColor={colors.accent}
-            />
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <View style={styles.content}>
+          {/* Header Text */}
+          <View style={styles.textContainer}>
+            <Text style={styles.welcomeText}>Merhaba! 👋</Text>
+            <Text style={styles.descriptionText}>
+              Seni nasıl çağıralım? Adını öğrenmek istiyoruz.
+            </Text>
           </View>
-        </View>
 
-        {/* Continue Button */}
-        <TouchableOpacity 
-          style={[
-            styles.continueButton, 
-            !name.trim() && styles.disabledButton
-          ]} 
-          onPress={handleContinue}
-          disabled={!name.trim()}
-        >
-          <Text style={[
-            styles.continueButtonText,
-            !name.trim() && styles.disabledButtonText
-          ]}>
-            DEVAM ET
-          </Text>
-        </TouchableOpacity>
-      </View>
+          {/* Input Container */}
+          <View style={styles.inputSection}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                ref={inputRef}
+                style={[
+                  styles.input,
+                  isFocused && styles.inputFocused
+                ]}
+                placeholder="Adınızı yazın..."
+                placeholderTextColor="#8A8A8A"
+                value={name}
+                onChangeText={setName}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                autoFocus={true}
+                selectionColor={colors.accent}
+                returnKeyType="done"
+                onSubmitEditing={handleContinue}
+                blurOnSubmit={false}
+              />
+            </View>
+          </View>
+
+          {/* Continue Button */}
+          <TouchableOpacity 
+            style={[
+              styles.continueButton, 
+              !name.trim() && styles.disabledButton
+            ]} 
+            onPress={handleContinue}
+            disabled={!name.trim()}
+          >
+            <Text style={[
+              styles.continueButtonText,
+              !name.trim() && styles.disabledButtonText
+            ]}>
+              DEVAM ET
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -88,6 +120,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   content: {
     flex: 1,
@@ -124,16 +159,20 @@ const styles = StyleSheet.create({
     marginBottom: hp(4),
   },
   input: {
-    backgroundColor: colors.surface,
+    backgroundColor: '#262626',
     borderWidth: 2,
-    borderColor: colors.secondary,
+    borderColor: '#3A3A3A',
     borderRadius: 16,
     paddingHorizontal: wp(5),
     paddingVertical: hp(2.5),
     fontSize: wp(4.8),
-    color: colors.text,
+    color: '#FFFFFF',
     textAlign: 'center',
     fontWeight: '500',
+  },
+  inputFocused: {
+    borderColor: colors.accent,
+    backgroundColor: '#2A2A2A',
   },
   continueButton: {
     backgroundColor: colors.accent,
