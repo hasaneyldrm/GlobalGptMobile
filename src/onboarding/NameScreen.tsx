@@ -35,7 +35,7 @@ const NameScreen: React.FC<Props> = ({ onComplete }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       
       <View style={styles.content}>
         <View style={styles.header}>
@@ -79,7 +79,7 @@ const NameScreen: React.FC<Props> = ({ onComplete }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
   content: {
     flex: 1,
@@ -94,13 +94,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: wp(8),
     fontWeight: '700',
-    color: '#000000',
+    color: colors.text,
     textAlign: 'center',
     marginBottom: hp(2),
   },
   subtitle: {
     fontSize: wp(4.5),
-    color: '#666666',
+    color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: wp(6),
   },
@@ -109,31 +109,31 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.surface,
     borderRadius: 15,
     paddingHorizontal: wp(5),
     paddingVertical: hp(2),
     fontSize: wp(4.5),
-    color: '#000000',
+    color: colors.text,
     textAlign: 'center',
-    backgroundColor: '#F8F8F8',
+    backgroundColor: colors.surface,
   },
   continueButton: {
-    backgroundColor: '#1EB7A7',
+    backgroundColor: colors.accent,
     paddingVertical: hp(2),
     borderRadius: 15,
     alignItems: 'center',
   },
   continueButtonText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: wp(4.5),
     fontWeight: '600',
   },
   disabledButton: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.textMuted,
   },
   disabledButtonText: {
-    color: '#999999',
+    color: colors.textSecondary,
   },
 });
 

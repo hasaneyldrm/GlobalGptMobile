@@ -12,6 +12,7 @@ import {
 import { useState } from 'react';
 import FirstScreen from './src/onboarding/FirstScreen';
 import NameScreen from './src/onboarding/NameScreen';
+import { colors } from './src/theme/colors';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<'first' | 'name'>('first');
@@ -28,8 +29,8 @@ function App() {
   return (
     <SafeAreaProvider>
       <StatusBar 
-        barStyle="dark-content" 
-        backgroundColor="#FFFFFF"
+        barStyle="light-content" 
+        backgroundColor={colors.background}
         translucent={false}
       />
       {currentScreen === 'first' ? (
