@@ -162,10 +162,10 @@ const ResetButtonText = styled(Text)`
 `;
 
 interface Props {
-  onBack?: () => void;
+  navigation?: any;
 }
 
-const ThemeScreen: React.FC<Props> = ({ onBack }) => {
+const ThemeScreen: React.FC<Props> = ({ navigation }) => {
   const { theme, currentTheme, setTheme, colors } = useTheme();
 
   const themeOptions = [

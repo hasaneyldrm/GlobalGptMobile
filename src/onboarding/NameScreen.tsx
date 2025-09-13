@@ -21,41 +21,49 @@ const hp = (percentage: number) => {
 };
 
 interface Props {
-  onComplete?: () => void;
+  navigation?: any;
 }
 
-const NameScreen: React.FC<Props> = ({ onComplete }) => {
+const NameScreen: React.FC<Props> = ({ navigation }) => {
   const [name, setName] = useState('');
 
   const handleContinue = () => {
     if (name.trim()) {
-      onComplete?.();
+      // İsim kaydedildi, ana uygulamaya geç
+      console.log('Kullanıcı adı:', name);
+      // navigation?.navigate('MainApp'); // Ana uygulama ekranı
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       
       <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Merhaba! 👋</Text>
-          <Text style={styles.subtitle}>
-            Seni nasıl çağıralım?
+        {/* Header Text */}
+        <View style={styles.textContainer}>
+          <Text style={styles.welcomeText}>Merhaba! 👋</Text>
+          <Text style={styles.descriptionText}>
+            Seni nasıl çağıralım? Adını öğrenmek istiyoruz.
           </Text>
         </View>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Adınızı yazın"
-            placeholderTextColor="#999"
-            value={name}
-            onChangeText={setName}
-            autoFocus
-          />
+        {/* Input Container */}
+        <View style={styles.inputSection}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Adınızı yazın..."
+              placeholderTextColor={colors.textMuted}
+              value={name}
+              onChangeText={setName}
+              autoFocus
+              selectionColor={colors.accent}
+            />
+          </View>
         </View>
 
+        {/* Continue Button */}
         <TouchableOpacity 
           style={[
             styles.continueButton, 
@@ -64,20 +72,12 @@ const NameScreen: React.FC<Props> = ({ onComplete }) => {
           onPress={handleContinue}
           disabled={!name.trim()}
         >
-          <View style={styles.buttonContent}>
-            <Text style={[
-              styles.continueButtonText,
-              !name.trim() && styles.disabledButtonText
-            ]}>
-              ✨ Mükemmel! Devam Et
-            </Text>
-            <Text style={[
-              styles.buttonSubtext,
-              !name.trim() && styles.disabledButtonSubtext
-            ]}>
-              Hemen başlayalım {name ? name : 'dostum'}!
-            </Text>
-          </View>
+          <Text style={[
+            styles.continueButtonText,
+            !name.trim() && styles.disabledButtonText
+          ]}>
+            DEVAM ET
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -87,61 +87,86 @@ const NameScreen: React.FC<Props> = ({ onComplete }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
   content: {
     flex: 1,
-    paddingHorizontal: wp(5),
-    paddingVertical: hp(5),
-    justifyContent: 'center',
-  },
-  header: {
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: hp(8),
+    paddingHorizontal: wp(6),
+    paddingVertical: hp(4),
   },
-  title: {
+  textContainer: {
+    marginTop: hp(8),
+    alignItems: 'center',
+    paddingHorizontal: wp(5),
+  },
+  welcomeText: {
     fontSize: wp(8),
     fontWeight: '700',
-    color: '#000000',
+    color: colors.text,
     textAlign: 'center',
-    marginBottom: hp(2),
+    marginBottom: hp(3),
   },
-  subtitle: {
+  descriptionText: {
     fontSize: wp(4.5),
-    color: '#666666',
+    color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: wp(6),
   },
+  inputSection: {
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
+    paddingHorizontal: wp(4),
+  },
   inputContainer: {
-    marginBottom: hp(6),
+    marginBottom: hp(4),
   },
   input: {
+    backgroundColor: colors.surface,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
-    borderRadius: 15,
+    borderColor: colors.secondary,
+    borderRadius: 16,
     paddingHorizontal: wp(5),
-    paddingVertical: hp(2),
-    fontSize: wp(4.5),
-    color: '#000000',
+    paddingVertical: hp(2.5),
+    fontSize: wp(4.8),
+    color: colors.text,
     textAlign: 'center',
-    backgroundColor: '#F8F8F8',
+    fontWeight: '500',
   },
   continueButton: {
-    backgroundColor: '#1EB7A7',
+    backgroundColor: colors.accent,
     paddingVertical: hp(2),
-    borderRadius: 15,
+    paddingHorizontal: wp(8),
+    borderRadius: 25,
     alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.accent,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
+    width: wp(84),
+    marginBottom: hp(4),
   },
   continueButtonText: {
-    color: '#FFFFFF',
-    fontSize: wp(4.5),
-    fontWeight: '600',
+    color: colors.white,
+    fontSize: wp(4.2),
+    fontWeight: '700',
+    letterSpacing: 1,
   },
   disabledButton: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.textMuted,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   disabledButtonText: {
-    color: '#999999',
+    color: colors.background,
+    opacity: 0.7,
   },
 });
 

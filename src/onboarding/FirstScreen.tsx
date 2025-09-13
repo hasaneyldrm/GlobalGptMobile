@@ -22,12 +22,12 @@ const hp = (percentage: number) => {
 };
 
 interface Props {
-  onNavigateToName?: () => void;
+  navigation?: any;
 }
 
-const FirstScreen: React.FC<Props> = ({ onNavigateToName }) => {
+const FirstScreen: React.FC<Props> = ({ navigation }) => {
   const handleContinue = () => {
-    onNavigateToName?.();
+    navigation?.navigate('Name');
   };
 
   return (

@@ -9,33 +9,17 @@ import { StatusBar } from 'react-native';
 import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import FirstScreen from './src/onboarding/FirstScreen';
 import NameScreen from './src/onboarding/NameScreen';
 import ThemeScreen from './src/screens/ThemeScreen';
 import { ThemeProvider } from './src/services/ThemeContext';
 import { colors } from './src/theme/colors';
 
+const Stack = createNativeStackNavigator();
+
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<'first' | 'name' | 'theme'>('first');
-
-  const handleNavigateToName = () => {
-    setCurrentScreen('name');
-  };
-
-  const handleComplete = () => {
-    // Burada ana uygulamaya yönlendirme yapılabilir
-    console.log('Onboarding completed!');
-  };
-
-  const handleNavigateToTheme = () => {
-    setCurrentScreen('theme');
-  };
-
-  const handleBackFromTheme = () => {
-    setCurrentScreen('first');
-  };
-
   return (
     <SafeAreaProvider>
       <ThemeProvider>
@@ -44,13 +28,19 @@ function App() {
           backgroundColor={colors.background}
           translucent={false}
         />
-        {currentScreen === 'first' ? (
-          <FirstScreen onNavigateToName={handleNavigateToName} />
-        ) : currentScreen === 'name' ? (
-          <NameScreen onComplete={handleComplete} />
-        ) : (
-          <ThemeScreen onBack={handleBackFromTheme} />
-        )}
+        <NavigationContainer>
+          <Stack.Navigator 
+            initialRouteName="First"
+            screenOptions={{
+              headerShown: false,
+              animation: 'slide_from_right', // Native iOS slide animasyonu
+            }}
+          >
+            <Stack.Screen name="First" component={FirstScreen} />
+            <Stack.Screen name="Name" component={NameScreen} />
+            <Stack.Screen name="Theme" component={ThemeScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </ThemeProvider>
     </SafeAreaProvider>
   );
