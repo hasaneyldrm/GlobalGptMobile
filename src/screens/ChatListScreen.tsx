@@ -10,6 +10,7 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { setActiveContact, loadChatHistory } from '../store/chatSlice';
@@ -26,6 +27,16 @@ const wp = (percentage: number) => {
 const hp = (percentage: number) => {
   return height * (percentage / 100);
 };
+
+// Settings SVG Icon Component
+const SettingsIcon = ({ size = 24, color = colors.text }: { size?: number; color?: string }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M12.012 2.25c.734.008 1.465.093 2.182.253a.75.75 0 01.582.649l.17 1.527a1.384 1.384 0 001.928 1.116l1.4-.615a.75.75 0 01.85.174 9.792 9.792 0 011.735 3.031.75.75 0 01-.314.88l-1.2.8a1.384 1.384 0 000 2.226l1.2.8a.75.75 0 01.314.88 9.793 9.793 0 01-1.735 3.031.75.75 0 01-.85.174l-1.4-.615a1.384 1.384 0 00-1.928 1.116l-.17 1.527a.75.75 0 01-.582.649 10.226 10.226 0 01-4.364 0 .75.75 0 01-.582-.649l-.17-1.527a1.384 1.384 0 00-1.928-1.116l-1.4.615a.75.75 0 01-.85-.174 9.792 9.792 0 01-1.735-3.031.75.75 0 01.314-.88l1.2-.8a1.384 1.384 0 000-2.226l-1.2-.8a.75.75 0 01-.314-.88 9.793 9.793 0 011.735-3.031.75.75 0 01.85-.174l1.4.615a1.384 1.384 0 001.928-1.116l.17-1.527a.75.75 0 01.582-.649c.717-.16 1.448-.245 2.182-.253zM15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+      fill={color}
+    />
+  </Svg>
+);
 
 interface ChatListScreenProps {
   navigation: any;
@@ -189,6 +200,12 @@ const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Sohbetler</Text>
+        <TouchableOpacity 
+          style={styles.settingsButton}
+          onPress={() => navigation.navigate('Settings' as any)}
+        >
+          <SettingsIcon size={wp(5)} color={colors.accent} />
+        </TouchableOpacity>
       </View>
 
       {/* Chat List */}
@@ -220,6 +237,9 @@ const styles = StyleSheet.create({
     paddingBottom: 80, // Tab bar için padding
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: wp(4),
     paddingVertical: hp(2),
     backgroundColor: colors.surface,
@@ -230,6 +250,14 @@ const styles = StyleSheet.create({
     fontSize: wp(6),
     fontWeight: '700',
     color: colors.text,
+  },
+  settingsButton: {
+    width: wp(10),
+    height: wp(10),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: wp(5),
+    backgroundColor: colors.accent + '15',
   },
   chatList: {
     flex: 1,
