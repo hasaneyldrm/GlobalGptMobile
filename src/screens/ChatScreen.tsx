@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    paddingBottom: 80, // Tab bar için padding
   },
   header: {
     flexDirection: 'row',

@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: hp(3),
+    paddingBottom: hp(10), // Tab bar için extra padding
   },
   header: {
     flexDirection: 'row',
