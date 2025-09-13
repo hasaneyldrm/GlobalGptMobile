@@ -28,29 +28,8 @@ interface ChatState {
 }
 
 const initialState: ChatState = {
-  contacts: [
-    {
-      id: 'global-gpt',
-      name: 'Global GPT',
-      avatar: '🤖',
-      lastMessage: 'Merhaba! Size nasıl yardımcı olabilirim?',
-      lastMessageTime: new Date().toISOString(),
-      unreadCount: 0,
-    },
-  ],
-  chatHistories: [
-    {
-      contactId: 'global-gpt',
-      messages: [
-        {
-          id: '1',
-          text: 'Merhaba! Ben Global GPT asistanınızım. Size nasıl yardımcı olabilirim?',
-          isUser: false,
-          timestamp: new Date().toISOString(),
-        },
-      ],
-    },
-  ],
+  contacts: [],
+  chatHistories: [],
 };
 
 const chatSlice = createSlice({

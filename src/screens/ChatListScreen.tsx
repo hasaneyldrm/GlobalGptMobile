@@ -142,9 +142,6 @@ const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Sohbetler</Text>
-        <TouchableOpacity style={styles.newChatButton}>
-          <Text style={styles.newChatIcon}>✏️</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Chat List */}
@@ -158,7 +155,7 @@ const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
             <Text style={styles.emptyIcon}>💬</Text>
             <Text style={styles.emptyTitle}>Henüz sohbet yok</Text>
             <Text style={styles.emptySubtitle}>
-              Global GPT ile sohbet etmeye başlayın!
+              Sohbet geçmişiniz burada görünecek
             </Text>
           </View>
         ) : (
@@ -176,9 +173,6 @@ const styles = StyleSheet.create({
     paddingBottom: 80, // Tab bar için padding
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: wp(4),
     paddingVertical: hp(2),
     backgroundColor: colors.surface,
@@ -189,15 +183,6 @@ const styles = StyleSheet.create({
     fontSize: wp(6),
     fontWeight: '700',
     color: colors.text,
-  },
-  newChatButton: {
-    width: wp(10),
-    height: wp(10),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  newChatIcon: {
-    fontSize: wp(5),
   },
   chatList: {
     flex: 1,
