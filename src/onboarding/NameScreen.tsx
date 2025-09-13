@@ -46,9 +46,9 @@ const NameScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleContinue = () => {
     if (name.trim()) {
-      // İsim kaydedildi, ana uygulamaya geç
+      // İsim kaydedildi, loading ekranına geç
       console.log('Kullanıcı adı:', name);
-      // navigation?.navigate('MainApp'); // Ana uygulama ekranı
+      navigation?.navigate('Loading');
     }
   };
 

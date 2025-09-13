@@ -14,6 +14,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import FirstScreen from './src/onboarding/FirstScreen';
 import NameScreen from './src/onboarding/NameScreen';
 import ThemeScreen from './src/screens/ThemeScreen';
+import LoadingScreen from './src/screens/LoadingScreen';
 import { ThemeProvider } from './src/services/ThemeContext';
 import { colors } from './src/theme/colors';
 
@@ -38,6 +39,7 @@ function App() {
           >
             <Stack.Screen name="First" component={FirstScreen} />
             <Stack.Screen name="Name" component={NameScreen} />
+            <Stack.Screen name="Loading" component={LoadingScreen} />
             <Stack.Screen name="Theme" component={ThemeScreen} />
           </Stack.Navigator>
         </NavigationContainer>
