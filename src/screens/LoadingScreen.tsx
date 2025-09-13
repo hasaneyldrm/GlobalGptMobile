@@ -159,7 +159,7 @@ const LoadingScreen: React.FC<Props> = ({ navigation }) => {
 
         {/* Main Title */}
         <Text style={styles.mainTitle}>
-          Global GPT Hazırlanıyor
+          Hazırlanıyor...
         </Text>
 
         {/* Current Status */}
