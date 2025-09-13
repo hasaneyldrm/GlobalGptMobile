@@ -5,6 +5,7 @@
  * @format
  */
 
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'react-native';
 import {
   SafeAreaProvider,
@@ -19,10 +20,39 @@ import PaywallScreen from './src/screens/PaywallScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import { ThemeProvider } from './src/services/ThemeContext';
 import { colors } from './src/theme/colors';
+import { storage } from './src/services/storage';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
+  const [initialRouteName, setInitialRouteName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      try {
+        const isOnboardingCompleted = await storage.getOnboardingCompleted();
+        if (isOnboardingCompleted) {
+          // Onboarding tamamlandıysa direkt HomeScreen'e git
+          setInitialRouteName('HomeScreen');
+        } else {
+          // Onboarding tamamlanmadıysa onboarding'den başla
+          setInitialRouteName('First');
+        }
+      } catch (error) {
+        console.error('Onboarding kontrolü sırasında hata:', error);
+        // Hata durumunda onboarding'den başla
+        setInitialRouteName('First');
+      }
+    };
+
+    checkOnboardingStatus();
+  }, []);
+
+  // Initial route belirlenmeden hiçbir şey render etme
+  if (initialRouteName === null) {
+    return null;
+  }
+
   return (
     <SafeAreaProvider>
       <ThemeProvider>
@@ -33,7 +63,7 @@ function App() {
         />
         <NavigationContainer>
           <Stack.Navigator 
-            initialRouteName="First"
+            initialRouteName={initialRouteName}
             screenOptions={{
               headerShown: false,
               animation: 'slide_from_right', // Native iOS slide animasyonu
