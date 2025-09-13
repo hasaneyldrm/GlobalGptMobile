@@ -6,6 +6,8 @@ class StorageService {
   private ONBOARDING_KEY = '@GlobalGpt_onboarding_completed';
   private CHAT_CONTACTS_KEY = '@GlobalGpt_chat_contacts';
   private CHAT_HISTORY_KEY = '@GlobalGpt_chat_history';
+  private USER_UUID_KEY = '@GlobalGpt_user_uuid';
+  private USER_NAME_KEY = '@GlobalGpt_user_name';
 
   // Theme Storage
   async getTheme(): Promise<string | null> {
@@ -110,6 +112,46 @@ class StorageService {
       await AsyncStorage.multiRemove([this.CHAT_CONTACTS_KEY, this.CHAT_HISTORY_KEY]);
     } catch (error) {
       console.error('Chat verileri silinirken hata:', error);
+      throw error;
+    }
+  }
+
+  // User UUID Storage
+  async getUserUUID(): Promise<string | null> {
+    try {
+      const uuid = await AsyncStorage.getItem(this.USER_UUID_KEY);
+      return uuid;
+    } catch (error) {
+      console.error('Kullanıcı UUID yüklenirken hata:', error);
+      return null;
+    }
+  }
+
+  async setUserUUID(uuid: string): Promise<void> {
+    try {
+      await AsyncStorage.setItem(this.USER_UUID_KEY, uuid);
+    } catch (error) {
+      console.error('Kullanıcı UUID kaydedilirken hata:', error);
+      throw error;
+    }
+  }
+
+  // User Name Storage
+  async getUserName(): Promise<string | null> {
+    try {
+      const name = await AsyncStorage.getItem(this.USER_NAME_KEY);
+      return name;
+    } catch (error) {
+      console.error('Kullanıcı adı yüklenirken hata:', error);
+      return null;
+    }
+  }
+
+  async setUserName(name: string): Promise<void> {
+    try {
+      await AsyncStorage.setItem(this.USER_NAME_KEY, name);
+    } catch (error) {
+      console.error('Kullanıcı adı kaydedilirken hata:', error);
       throw error;
     }
   }

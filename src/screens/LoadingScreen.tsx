@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { colors } from '../theme/colors';
+import { storage } from '../services/storage';
+import { userService } from '../api/userService';
+import { generateUUID } from '../utils/uuid';
 
 const { width, height } = Dimensions.get('window');
 
@@ -58,6 +61,48 @@ const LoadingScreen: React.FC<Props> = ({ navigation }) => {
     'Son ayarlamalar yapılıyor'
   ];
 
+  // Kullanıcı UUID'sini kontrol et ve gerekirse oluştur
+  const initializeUser = async () => {
+    try {
+      // Mevcut UUID'yi kontrol et
+      let userUUID = await storage.getUserUUID();
+      
+      if (!userUUID) {
+        // UUID yoksa yeni oluştur
+        userUUID = generateUUID();
+        await storage.setUserUUID(userUUID);
+        console.log('Yeni UUID oluşturuldu:', userUUID);
+      } else {
+        console.log('Mevcut UUID bulundu:', userUUID);
+        return; // UUID zaten varsa API çağrısı yapma
+      }
+
+      // Kullanıcı adını al
+      const userName = await storage.getUserName();
+      
+      if (userName && userUUID) {
+        // API'ye kullanıcı bilgilerini gönder
+        const userData = {
+          uuid: userUUID,
+          name: userName,
+          project_id: 5
+        };
+
+        const response = await userService.createUser(userData);
+        
+        if (response.success) {
+          console.log('Kullanıcı başarıyla oluşturuldu:', response.data);
+        } else {
+          console.error('Kullanıcı oluşturma hatası:', response.message);
+        }
+      } else {
+        console.log('Kullanıcı adı bulunamadı, API çağrısı yapılmadı');
+      }
+    } catch (error) {
+      console.error('Kullanıcı başlatma hatası:', error);
+    }
+  };
+
   const navigateToNext = () => {
     // Her zaman PaywallScreen'e git
     console.log('Loading completed - going to PaywallScreen');
@@ -67,6 +112,9 @@ const LoadingScreen: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     let textIndex = 0;
     setCurrentText(motivationalTexts[0]);
+
+    // Kullanıcıyı başlat (UUID oluştur ve API çağrısı yap)
+    initializeUser();
 
     // Circular progress animation
     Animated.timing(circularProgressAnimation, {

@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { colors } from '../theme/colors';
+import { storage } from '../services/storage';
 
 const { width, height } = Dimensions.get('window');
 const wp = (percentage: number) => {
@@ -44,11 +45,18 @@ const NameScreen: React.FC<Props> = ({ navigation }) => {
     }, [])
   );
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (name.trim()) {
-      // İsim kaydedildi, loading ekranına geç
-      console.log('Kullanıcı adı:', name);
-      navigation?.navigate('Loading');
+      try {
+        // İsmi async storage'a kaydet
+        await storage.setUserName(name.trim());
+        console.log('Kullanıcı adı kaydedildi:', name);
+        navigation?.navigate('Loading');
+      } catch (error) {
+        console.error('İsim kaydedilirken hata:', error);
+        // Hata durumunda da devam et
+        navigation?.navigate('Loading');
+      }
     }
   };
 
