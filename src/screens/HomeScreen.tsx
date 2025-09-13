@@ -103,26 +103,12 @@ const HomeScreen: React.FC = () => {
             </View>
           </View>
           
-          <TouchableOpacity style={styles.profileButton} onPress={handleProfilePress}>
-            <Text style={styles.profileIcon}>👤</Text>
-          </TouchableOpacity>
+          <View style={styles.creditDisplay}>
+            <Text style={styles.creditLabel}>Kalan</Text>
+            <Text style={styles.creditAmount}>∞</Text>
+          </View>
         </View>
 
-        {/* Quick Stats */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>∞</Text>
-            <Text style={styles.statLabel}>Kalan Kredi</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Toplam Sohbet</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>5</Text>
-            <Text style={styles.statLabel}>AI Karakter</Text>
-          </View>
-        </View>
 
         {/* Quick Actions */}
         <View style={styles.actionsContainer}>
@@ -146,29 +132,6 @@ const HomeScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Recent Activity */}
-        <View style={styles.recentContainer}>
-          <Text style={styles.sectionTitle}>Son Aktiviteler</Text>
-          
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>🤖</Text>
-            <Text style={styles.emptyTitle}>Henüz sohbet yok</Text>
-            <Text style={styles.emptyDescription}>
-              İlk sohbetini başlatmak için yukarıdaki "Yeni Sohbet" butonuna tıkla!
-            </Text>
-          </View>
-        </View>
-
-        {/* Bottom Actions */}
-        <View style={styles.bottomActions}>
-          <TouchableOpacity style={styles.primaryButton} onPress={handleChatPress}>
-            <Text style={styles.primaryButtonText}>Sohbete Başla 🚀</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.secondaryButton} onPress={handleSettingsPress}>
-            <Text style={styles.secondaryButtonText}>Ayarlar</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -216,18 +179,20 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: -0.5,
   },
-  profileButton: {
-    width: wp(12),
-    height: wp(12),
-    borderRadius: wp(6),
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
+  creditDisplay: {
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.secondary,
+    justifyContent: 'center',
   },
-  profileIcon: {
+  creditLabel: {
+    fontSize: wp(3),
+    color: colors.textSecondary,
+    fontWeight: '500',
+  },
+  creditAmount: {
     fontSize: wp(6),
+    color: colors.accent,
+    fontWeight: '700',
+    marginTop: hp(0.2),
   },
   statsContainer: {
     flexDirection: 'row',

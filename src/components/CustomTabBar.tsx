@@ -43,7 +43,7 @@ const chatIcon = (color: string) => `
 `;
 
 const getIcon = (routeName: string, isFocused: boolean) => {
-  const color = isFocused ? colors.accent : colors.textMuted;
+  const color = isFocused ? colors.white : colors.textMuted;
   
   switch (routeName) {
     case 'Home':
@@ -90,7 +90,7 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, navigation }) => {
         <Text style={[
           styles.label, 
           { color: colors.textMuted },
-          isFocused && { color: colors.accent, fontWeight: '600' }
+          isFocused && { color: colors.white, fontWeight: '600' }
         ]}>
           {getTabLabel(route.name)}
         </Text>
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     marginLeft: -15,
     width: 30,
     height: 3,
-    backgroundColor: colors.accent,
+    backgroundColor: colors.white,
     borderRadius: 2,
   },
 });
