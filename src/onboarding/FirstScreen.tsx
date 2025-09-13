@@ -37,7 +37,7 @@ const FirstScreen: React.FC<Props> = ({ onNavigateToName }) => {
       <View style={styles.content}>
         {/* Welcome Text */}
         <View style={styles.textContainer}>
-          <Text style={styles.welcomeText}>Global GPT'ye Hoş Geldiniz! 🎉</Text>
+          <Text style={styles.welcomeText}>Global GPT'ye Hoş Geldiniz!</Text>
           <Text style={styles.descriptionText}>
             Yapay zeka ile sohbet etmeye ve sorularınıza anında cevap almaya hazır mısınız?
           </Text>
