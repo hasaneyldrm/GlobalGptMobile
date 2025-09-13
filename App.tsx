@@ -23,6 +23,7 @@ import { colors } from './src/theme/colors';
 import { storage } from './src/services/storage';
 import { Provider } from 'react-redux';
 import { store } from './src/store';
+import { loadChatHistory } from './src/store/chatSlice';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,9 +31,20 @@ function App() {
   const [initialRouteName, setInitialRouteName] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkOnboardingStatus = async () => {
+    const initializeApp = async () => {
       try {
+        // Onboarding durumunu kontrol et
         const isOnboardingCompleted = await storage.getOnboardingCompleted();
+        
+        // Chat verilerini yükle
+        const [contacts, chatHistories] = await Promise.all([
+          storage.getChatContacts(),
+          storage.getChatHistory()
+        ]);
+        
+        // Redux store'a chat verilerini yükle
+        store.dispatch(loadChatHistory({ contacts, chatHistories }));
+        
         if (isOnboardingCompleted) {
           // Onboarding tamamlandıysa direkt TabNavigator'a git
           setInitialRouteName('MainTabs');
@@ -41,13 +53,13 @@ function App() {
           setInitialRouteName('First');
         }
       } catch (error) {
-        console.error('Onboarding kontrolü sırasında hata:', error);
+        console.error('Uygulama başlatılırken hata:', error);
         // Hata durumunda onboarding'den başla
         setInitialRouteName('First');
       }
     };
 
-    checkOnboardingStatus();
+    initializeApp();
   }, []);
 
   // Initial route belirlenmeden hiçbir şey render etme

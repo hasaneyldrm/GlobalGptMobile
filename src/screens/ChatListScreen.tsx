@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  Image,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
@@ -97,11 +98,57 @@ const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
         activeOpacity={0.7}
       >
         <View style={styles.avatarContainer}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {contact.avatar || contact.name.charAt(0).toUpperCase()}
-            </Text>
-          </View>
+          {contact.avatar ? (
+            <View style={styles.avatar}>
+              {contact.avatar === 'teknasyon' ? (
+                <Image
+                  source={require('../assets/teknasyon.png')}
+                  style={styles.avatarImage}
+                  resizeMode="contain"
+                />
+              ) : contact.avatar === 'jonsnow' ? (
+                <Image
+                  source={require('../assets/jonsnow.png')}
+                  style={styles.avatarImage}
+                  resizeMode="contain"
+                />
+              ) : contact.avatar === 'cersei' ? (
+                <Image
+                  source={require('../assets/cersei.png')}
+                  style={styles.avatarImage}
+                  resizeMode="contain"
+                />
+              ) : contact.avatar === 'nightking' ? (
+                <Image
+                  source={require('../assets/nightking.png')}
+                  style={styles.avatarImage}
+                  resizeMode="contain"
+                />
+              ) : contact.avatar === 'semih' ? (
+                <Image
+                  source={require('../assets/semih.jpg')}
+                  style={styles.avatarImage}
+                  resizeMode="contain"
+                />
+              ) : contact.avatar === 'doruk' ? (
+                <Image
+                  source={require('../assets/doruk.jpg')}
+                  style={styles.avatarImage}
+                  resizeMode="contain"
+                />
+              ) : (
+                <Text style={styles.avatarText}>
+                  {contact.name.charAt(0).toUpperCase()}
+                </Text>
+              )}
+            </View>
+          ) : (
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {contact.name.charAt(0).toUpperCase()}
+              </Text>
+            </View>
+          )}
         </View>
         
         <View style={styles.contactInfo}>
@@ -214,6 +261,11 @@ const styles = StyleSheet.create({
     fontSize: wp(6),
     fontWeight: '600',
     color: colors.accent,
+  },
+  avatarImage: {
+    width: wp(14),
+    height: wp(14),
+    borderRadius: wp(7),
   },
   contactInfo: {
     flex: 1,

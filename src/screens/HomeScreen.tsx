@@ -10,10 +10,19 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
+import { addContact } from '../store/chatSlice';
 import { colors } from '../theme/colors';
+
+type RootStackParamList = {
+  MainTabs: undefined;
+  Chat: {
+    screen: string;
+    params?: any;
+  };
+};
 
 const { width, height } = Dimensions.get('window');
 
@@ -27,77 +36,82 @@ const hp = (percentage: number) => {
 };
 
 const HomeScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch();
   
   // Credit from Redux store
   const userCredit = useSelector((state: RootState) => state.credit.userCredit);
 
-  const handleChatPress = () => {
-    console.log('Chat başlatıldı');
-    // Chat ekranına yönlendir
-    // navigation.navigate('ChatScreen');
-  };
+  const handleCharacterPress = (characterId: string, characterName: string) => {
+    // Kişiyi contact olarak ekle (eğer yoksa)
+    dispatch(addContact({
+      id: characterId,
+      name: characterName,
+      avatar: characterId, // Avatar için character id'sini kullan
+    }));
 
-  const handleSettingsPress = () => {
-    console.log('Ayarlar açıldı');
-    // Ayarlar ekranına yönlendir
-    // navigation.navigate('SettingsScreen');
-  };
-
-  const handleProfilePress = () => {
-    console.log('Profil açıldı');
-    // Profil ekranına yönlendir
-    // navigation.navigate('ProfileScreen');
+    // Önce Chat tab'ına git, sonra ChatDetail'e
+    navigation.navigate('Chat', {
+      screen: 'ChatList'
+    });
+    
+    // Kısa bir gecikme ile ChatDetail'e geç (animasyon için)
+    setTimeout(() => {
+      navigation.navigate('Chat', {
+        screen: 'ChatDetail',
+        params: { contactId: characterId }
+      });
+    }, 100);
   };
 
   const quickActions = [
     {
-      id: '2',
+      id: 'teknasyon',
       title: 'Teknasyon',
       description: 'Teknoloji uzmanı ile konuş',
       icon: 'teknasyon',
       color: '#8B5CF6',
-      action: () => console.log('Teknasyon')
+      action: () => handleCharacterPress('teknasyon', 'Teknasyon')
     },
     {
-      id: '3',
+      id: 'jonsnow',
       title: 'Jon Snow',
       description: 'Kuzey\'in Kralı ile konuş',
       icon: 'jonsnow',
       color: '#475569',
-      action: () => console.log('Jon Snow')
+      action: () => handleCharacterPress('jonsnow', 'Jon Snow')
     },
     {
-      id: '4',
+      id: 'cersei',
       title: 'Cersei Lannister',
       description: 'Kraliçe ile sohbet et',
       icon: 'cersei',
       color: '#DC2626',
-      action: () => console.log('Cersei')
+      action: () => handleCharacterPress('cersei', 'Cersei Lannister')
     },
     {
-      id: '5',
+      id: 'nightking',
       title: 'Night King',
       description: 'Gece Kralı\'nın gücü',
       icon: 'nightking',
       color: '#1E40AF',
-      action: () => console.log('Night King')
+      action: () => handleCharacterPress('nightking', 'Night King')
     },
     {
-      id: '6',
+      id: 'semih',
       title: 'Semih Kışlar',
       description: 'Hackathon düşmanı danışman ile konuş',
       icon: 'semih',
       color: '#059669',
-      action: () => console.log('Semih')
+      action: () => handleCharacterPress('semih', 'Semih Kışlar')
     },
     {
-      id: '7',
+      id: 'doruk',
       title: 'Doruk',
       description: 'Kuşadalı DJ, Sallantılı Developer ile konuş',
       icon: 'doruk',
       color: '#7C3AED',
-      action: () => console.log('Doruk')
+      action: () => handleCharacterPress('doruk', 'Doruk')
     }
   ];
 
@@ -124,7 +138,7 @@ const HomeScreen: React.FC = () => {
             </View>
           </View>
           
-          <TouchableOpacity style={styles.creditButton} onPress={() => navigation.navigate('Paywall' as never)}>
+          <TouchableOpacity style={styles.creditButton} onPress={() => navigation.navigate('Paywall' as any)}>
             <Text style={styles.creditAmount}>{userCredit}</Text>
           </TouchableOpacity>
         </View>
