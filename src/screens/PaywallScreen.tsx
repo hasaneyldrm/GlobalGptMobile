@@ -13,6 +13,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { SvgXml } from 'react-native-svg';
 import { colors } from '../theme/colors';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -31,15 +32,33 @@ const getResponsivePadding = (padding: number) => {
   return padding;
 };
 
-// SVG Icons as text (simple fallback)
-const getSvgIcon = (type: string) => {
+// SVG Icons
+const unlimitedIconSvg = (color: string) => `
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="${color}" stroke-width="2"/>
+<path d="M8 12L11 15L16 9" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`;
+
+const heartIconSvg = (color: string) => `
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.5783 8.50903 2.9987 7.05 2.9987C5.59096 2.9987 4.19169 3.5783 3.16 4.61C2.1283 5.6417 1.5487 7.04097 1.5487 8.5C1.5487 9.95903 2.1283 11.3583 3.16 12.39L12 21.23L20.84 12.39C21.351 11.8792 21.7563 11.2728 22.0329 10.6053C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.06211 22.0329 6.39467C21.7563 5.72723 21.351 5.1208 20.84 4.61V4.61Z" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`;
+
+const starSvg = (color: string) => `
+<svg height="24px" viewBox="0 0 24 24" width="24px" fill="${color}">
+<path d="M0 0h24v24H0V0z" fill="none"/>
+<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/>
+</svg>
+`;
+
+const getSvgIcon = (type: string, color: string) => {
   switch (type) {
-    case 'analytics': return '📊';
-    case 'unlimited': return '✅';
-    case 'heart': return '❤️';
-    case 'star': return '⭐';
-    case 'score': return '🎯';
-    default: return '⭐';
+    case 'unlimited': return unlimitedIconSvg(color);
+    case 'heart': return heartIconSvg(color);
+    case 'star': return starSvg(color);
+    default: return starSvg(color);
   }
 };
 
@@ -59,7 +78,6 @@ const PaywallScreen = () => {
   const [selectedProduct, setSelectedProduct] = useState('medium');
   
   const sliderRef = useRef<ScrollView>(null);
-  const buzzAnimation = useRef(new Animated.Value(1)).current;
 
   // Colors - mevcut proje renklerini kullan
   const ourColors = {
@@ -77,28 +95,27 @@ const PaywallScreen = () => {
   const slides: SlideData[] = [
     {
       id: 1,
-      title: 'AI Skor Analizi',
-      description: 'Yapay zeka ile kişilik analizinizi keşfedin',
-      icon: 'score',
-      isAIScore: true
-    },
-    {
-      id: 2,
-      title: 'Detaylı Analitik',
-      description: 'Gelişiminizi takip edin ve ilerleyin',
-      icon: 'analytics'
-    },
-    {
-      id: 3,
       title: 'Sınırsız Erişim',
       description: 'Tüm özelliklerden sınırsız faydalanın',
       icon: 'unlimited'
     },
     {
-      id: 4,
+      id: 2,
       title: 'Kişiselleştirilmiş Deneyim',
       description: 'Size özel AI asistanları',
       icon: 'heart'
+    },
+    {
+      id: 3,
+      title: 'Developer Besliyoruz',
+      description: 'Bu kredilerle geliştiricileri mutlu ediyorsunuz! 🍕',
+      icon: 'heart'
+    },
+    {
+      id: 4,
+      title: 'Çok Mutlu Olurum 😊',
+      description: 'Satın alımınız beni gerçekten çok mutlu ediyor!',
+      icon: 'star'
     }
   ];
 
@@ -145,37 +162,6 @@ const PaywallScreen = () => {
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  // Buzz animation for AI Score
-  useEffect(() => {
-    const startBuzzAnimation = () => {
-      Animated.sequence([
-        Animated.timing(buzzAnimation, {
-          toValue: 1.1,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(buzzAnimation, {
-          toValue: 0.95,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(buzzAnimation, {
-          toValue: 1.05,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(buzzAnimation, {
-          toValue: 1,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-      ]).start(() => {
-        setTimeout(startBuzzAnimation, 2000);
-      });
-    };
-
-    setTimeout(startBuzzAnimation, 1000);
-  }, [buzzAnimation]);
 
   const onSlideChange = (event: any) => {
     const { contentOffset } = event.nativeEvent;
@@ -244,28 +230,13 @@ const PaywallScreen = () => {
         >
           {slides.map((slide) => (
             <View key={slide.id} style={styles.slide}>
-              {slide.isAIScore ? (
-                <View style={styles.aiScoreContainer}>
-                  <Animated.View 
-                    style={[
-                      styles.scoreCard, 
-                      { 
-                        backgroundColor: ourColors.surface,
-                        transform: [{ scale: buzzAnimation }]
-                      }
-                    ]}
-                  >
-                    <Text style={[styles.scoreNumber, { color: ourColors.primary }]}>86</Text>
-                    <View style={styles.scoreBlurOverlay} />
-                  </Animated.View>
-                </View>
-              ) : (
-                <View style={styles.slideIconContainer}>
-                  <Text style={[styles.slideIcon, { color: ourColors.primary }]}>
-                    {getSvgIcon(slide.icon)}
-                  </Text>
-                </View>
-              )}
+              <View style={styles.slideIconContainer}>
+                <SvgXml 
+                  xml={getSvgIcon(slide.icon, ourColors.primary)} 
+                  width={getResponsiveSize(48)} 
+                  height={getResponsiveSize(48)} 
+                />
+              </View>
               <Text style={[styles.slideTitle, { color: ourColors.text }]}>
                 {slide.title}
               </Text>
@@ -376,10 +347,10 @@ const styles = StyleSheet.create({
     paddingBottom: getResponsivePadding(40),
   },
   logoImage: {
-    width: getResponsiveSize(80),
-    height: getResponsiveSize(80),
+    width: getResponsiveSize(120),
+    height: getResponsiveSize(120),
     alignSelf: 'center',
-    marginBottom: getResponsivePadding(20),
+    marginBottom: getResponsivePadding(30),
   },
   subtitle: {
     fontSize: getResponsiveSize(32),
@@ -409,37 +380,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: getResponsivePadding(16),
-  },
-  slideIcon: {
-    fontSize: getResponsiveSize(48),
-  },
-  aiScoreContainer: {
-    alignItems: 'center',
-    marginBottom: getResponsivePadding(10),
-  },
-  scoreCard: {
-    width: getResponsiveSize(120),
-    height: getResponsiveSize(120),
-    borderRadius: getResponsiveSize(20),
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  scoreNumber: {
-    fontSize: getResponsiveSize(48),
-    fontFamily: 'System',
-    fontWeight: '700',
-    letterSpacing: -1,
-  },
-  scoreBlurOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: getResponsiveSize(20),
   },
   slideTitle: {
     fontSize: getResponsiveSize(20),
