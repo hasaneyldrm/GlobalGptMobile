@@ -15,6 +15,9 @@ class UserService {
 
   async createUser(userData: UserData): Promise<ApiResponse> {
     try {
+      console.log('API çağrısı yapılıyor:', `${this.baseUrl}/users`);
+      console.log('Gönderilen data:', JSON.stringify(userData));
+      
       const response = await fetch(`${this.baseUrl}/users`, {
         method: 'POST',
         headers: {
@@ -23,18 +26,46 @@ class UserService {
         body: JSON.stringify(userData),
       });
 
-      const data = await response.json();
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
 
+      // Response text'ini önce al
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+
+      // Eğer response başarılıysa (status 200-299), JSON parse hatası olsa bile başarılı say
       if (response.ok) {
-        return {
-          success: true,
-          data: data,
-        };
+        // JSON parse etmeyi dene
+        let data;
+        try {
+          data = JSON.parse(responseText);
+          return {
+            success: true,
+            data: data,
+          };
+        } catch (parseError) {
+          console.warn('JSON parse hatası ama response başarılı:', parseError);
+          // JSON parse edilemese bile başarılı response döndür
+          return {
+            success: true,
+            data: { message: 'Kullanıcı başarıyla oluşturuldu', rawResponse: responseText },
+          };
+        }
       } else {
-        return {
-          success: false,
-          message: data.message || 'Kullanıcı oluşturulamadı',
-        };
+        // Hata durumunda JSON parse etmeyi dene
+        let errorData;
+        try {
+          errorData = JSON.parse(responseText);
+          return {
+            success: false,
+            message: errorData.message || 'Kullanıcı oluşturulamadı',
+          };
+        } catch (parseError) {
+          return {
+            success: false,
+            message: `Server hatası: ${responseText.substring(0, 100)}...`,
+          };
+        }
       }
     } catch (error) {
       console.error('API çağrısı hatası:', error);

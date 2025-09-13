@@ -64,39 +64,46 @@ const LoadingScreen: React.FC<Props> = ({ navigation }) => {
   // Kullanıcı UUID'sini kontrol et ve gerekirse oluştur
   const initializeUser = async () => {
     try {
+      // TEST İÇİN: Storage'ı temizle (sonra bu satırı silin)
+      // await storage.setUserUUID('');
+      // await storage.setUserName('');
+      
       // Mevcut UUID'yi kontrol et
       let userUUID = await storage.getUserUUID();
+      let isNewUser = false;
       
       if (!userUUID) {
         // UUID yoksa yeni oluştur
         userUUID = generateUUID();
         await storage.setUserUUID(userUUID);
+        isNewUser = true;
         console.log('Yeni UUID oluşturuldu:', userUUID);
       } else {
         console.log('Mevcut UUID bulundu:', userUUID);
-        return; // UUID zaten varsa API çağrısı yapma
       }
 
       // Kullanıcı adını al
       const userName = await storage.getUserName();
       
       if (userName && userUUID) {
-        // API'ye kullanıcı bilgilerini gönder
+        // API'ye kullanıcı bilgilerini gönder (her durumda)
         const userData = {
           uuid: userUUID,
           name: userName,
           project_id: 5
         };
 
+        console.log('API\'ye gönderilen data:', userData);
         const response = await userService.createUser(userData);
         
         if (response.success) {
-          console.log('Kullanıcı başarıyla oluşturuldu:', response.data);
+          console.log('Kullanıcı başarıyla oluşturuldu/güncellendi:', response.data);
         } else {
           console.error('Kullanıcı oluşturma hatası:', response.message);
         }
       } else {
         console.log('Kullanıcı adı bulunamadı, API çağrısı yapılmadı');
+        console.log('userName:', userName, 'userUUID:', userUUID);
       }
     } catch (error) {
       console.error('Kullanıcı başlatma hatası:', error);
