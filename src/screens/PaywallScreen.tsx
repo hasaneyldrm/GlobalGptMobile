@@ -187,10 +187,10 @@ const PaywallScreen = () => {
       await storage.setOnboardingCompleted(true);
       console.log('Subscribe tapped - Onboarding completed');
       
-      // HomeScreen'e git
+      // MainTabs'e git
       (navigation as any).reset({
         index: 0,
-        routes: [{ name: 'HomeScreen' }],
+        routes: [{ name: 'MainTabs' }],
       });
     } catch (error) {
       console.error('Subscribe işlemi sırasında hata:', error);
@@ -203,10 +203,10 @@ const PaywallScreen = () => {
       await storage.setOnboardingCompleted(true);
       console.log('Close tapped - Onboarding completed');
       
-      // HomeScreen'e git
+      // MainTabs'e git
       (navigation as any).reset({
         index: 0,
-        routes: [{ name: 'HomeScreen' }],
+        routes: [{ name: 'MainTabs' }],
       });
     } catch (error) {
       console.error('Close işlemi sırasında hata:', error);

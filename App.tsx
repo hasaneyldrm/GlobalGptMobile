@@ -17,7 +17,7 @@ import NameScreen from './src/onboarding/NameScreen';
 import ThemeScreen from './src/screens/ThemeScreen';
 import LoadingScreen from './src/screens/LoadingScreen';
 import PaywallScreen from './src/screens/PaywallScreen';
-import HomeScreen from './src/screens/HomeScreen';
+import TabNavigator from './src/navigation/TabNavigator';
 import { ThemeProvider } from './src/services/ThemeContext';
 import { colors } from './src/theme/colors';
 import { storage } from './src/services/storage';
@@ -32,8 +32,8 @@ function App() {
       try {
         const isOnboardingCompleted = await storage.getOnboardingCompleted();
         if (isOnboardingCompleted) {
-          // Onboarding tamamlandıysa direkt HomeScreen'e git
-          setInitialRouteName('HomeScreen');
+          // Onboarding tamamlandıysa direkt TabNavigator'a git
+          setInitialRouteName('MainTabs');
         } else {
           // Onboarding tamamlanmadıysa onboarding'den başla
           setInitialRouteName('First');
@@ -73,7 +73,7 @@ function App() {
             <Stack.Screen name="Name" component={NameScreen} />
             <Stack.Screen name="Loading" component={LoadingScreen} />
             <Stack.Screen name="Paywall" component={PaywallScreen} />
-            <Stack.Screen name="HomeScreen" component={HomeScreen} />
+            <Stack.Screen name="MainTabs" component={TabNavigator} />
             <Stack.Screen name="Theme" component={ThemeScreen} />
           </Stack.Navigator>
         </NavigationContainer>
