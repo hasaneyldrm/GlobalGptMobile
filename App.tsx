@@ -12,10 +12,12 @@ import {
 import { useState } from 'react';
 import FirstScreen from './src/onboarding/FirstScreen';
 import NameScreen from './src/onboarding/NameScreen';
+import ThemeScreen from './src/screens/ThemeScreen';
+import { ThemeProvider } from './src/services/ThemeContext';
 import { colors } from './src/theme/colors';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<'first' | 'name'>('first');
+  const [currentScreen, setCurrentScreen] = useState<'first' | 'name' | 'theme'>('first');
 
   const handleNavigateToName = () => {
     setCurrentScreen('name');
@@ -26,18 +28,30 @@ function App() {
     console.log('Onboarding completed!');
   };
 
+  const handleNavigateToTheme = () => {
+    setCurrentScreen('theme');
+  };
+
+  const handleBackFromTheme = () => {
+    setCurrentScreen('first');
+  };
+
   return (
     <SafeAreaProvider>
-      <StatusBar 
-        barStyle="light-content" 
-        backgroundColor={colors.background}
-        translucent={false}
-      />
-      {currentScreen === 'first' ? (
-        <FirstScreen onNavigateToName={handleNavigateToName} />
-      ) : (
-        <NameScreen onComplete={handleComplete} />
-      )}
+      <ThemeProvider>
+        <StatusBar 
+          barStyle="light-content" 
+          backgroundColor={colors.background}
+          translucent={false}
+        />
+        {currentScreen === 'first' ? (
+          <FirstScreen onNavigateToName={handleNavigateToName} />
+        ) : currentScreen === 'name' ? (
+          <NameScreen onComplete={handleComplete} />
+        ) : (
+          <ThemeScreen onBack={handleBackFromTheme} />
+        )}
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

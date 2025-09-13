@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
   StatusBar,
+  Image,
 } from 'react-native';
-import LottieView from 'lottie-react-native';
 import { colors } from '../theme/colors';
 
 // Responsive boyutlar için yardımcı fonksiyonlar
@@ -35,27 +35,26 @@ const FirstScreen: React.FC<Props> = ({ onNavigateToName }) => {
       <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       
       <View style={styles.content}>
-        {/* Lottie Animation */}
-        <View style={styles.animationContainer}>
-          <LottieView
-            source={require('../assets/lotties/2.json')}
-            autoPlay
-            loop
-            style={styles.lottieStyle}
-          />
-        </View>
-
         {/* Welcome Text */}
         <View style={styles.textContainer}>
-          <Text style={styles.welcomeText}>Hoş Geldiniz!</Text>
+          <Text style={styles.welcomeText}>Global GPT'ye Hoş Geldiniz! 🎉</Text>
           <Text style={styles.descriptionText}>
-            Global GPT ile muhteşem bir deneyime başlamaya hazır mısın?
+            Yapay zeka ile sohbet etmeye ve sorularınıza anında cevap almaya hazır mısınız?
           </Text>
+        </View>
+
+        {/* Logo */}
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('../assets/ggpt.png')}
+            style={styles.logoStyle}
+            resizeMode="contain"
+          />
         </View>
 
         {/* Continue Button */}
         <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
-          <Text style={styles.continueButtonText}>Devam Et</Text>
+          <Text style={styles.continueButtonText}>DEVAM ET</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -71,21 +70,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: wp(8),
-    paddingVertical: hp(8),
-  },
-  animationContainer: {
-    flex: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lottieStyle: {
-    width: wp(80),
-    height: wp(80),
+    paddingHorizontal: wp(6),
+    paddingVertical: hp(4),
   },
   textContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    marginTop: hp(8),
     alignItems: 'center',
     paddingHorizontal: wp(5),
   },
@@ -102,25 +91,39 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: wp(6),
   },
+  logoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: hp(4),
+  },
+  logoStyle: {
+    width: wp(60),
+    height: wp(60),
+  },
   continueButton: {
     backgroundColor: colors.accent,
-    paddingVertical: hp(1.8),
+    paddingVertical: hp(2),
     paddingHorizontal: wp(8),
-    borderRadius: 12,
+    borderRadius: 25,
     alignItems: 'center',
+    justifyContent: 'center',
     shadowColor: colors.accent,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
+    width: wp(84), // Yatayda daha uzun buton
+    marginBottom: hp(4),
   },
   continueButtonText: {
     color: colors.white,
     fontSize: wp(4.2),
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 1,
   },
 });
 

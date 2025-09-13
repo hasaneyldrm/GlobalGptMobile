@@ -35,7 +35,7 @@ const NameScreen: React.FC<Props> = ({ onComplete }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+      <StatusBar barStyle="dark-content" />
       
       <View style={styles.content}>
         <View style={styles.header}>
@@ -64,12 +64,20 @@ const NameScreen: React.FC<Props> = ({ onComplete }) => {
           onPress={handleContinue}
           disabled={!name.trim()}
         >
-          <Text style={[
-            styles.continueButtonText,
-            !name.trim() && styles.disabledButtonText
-          ]}>
-            Devam Et
-          </Text>
+          <View style={styles.buttonContent}>
+            <Text style={[
+              styles.continueButtonText,
+              !name.trim() && styles.disabledButtonText
+            ]}>
+              ✨ Mükemmel! Devam Et
+            </Text>
+            <Text style={[
+              styles.buttonSubtext,
+              !name.trim() && styles.disabledButtonSubtext
+            ]}>
+              Hemen başlayalım {name ? name : 'dostum'}!
+            </Text>
+          </View>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -79,7 +87,7 @@ const NameScreen: React.FC<Props> = ({ onComplete }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#FFFFFF',
   },
   content: {
     flex: 1,
@@ -94,13 +102,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: wp(8),
     fontWeight: '700',
-    color: colors.text,
+    color: '#000000',
     textAlign: 'center',
     marginBottom: hp(2),
   },
   subtitle: {
     fontSize: wp(4.5),
-    color: colors.textSecondary,
+    color: '#666666',
     textAlign: 'center',
     lineHeight: wp(6),
   },
@@ -109,31 +117,31 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 2,
-    borderColor: colors.surface,
+    borderColor: '#E0E0E0',
     borderRadius: 15,
     paddingHorizontal: wp(5),
     paddingVertical: hp(2),
     fontSize: wp(4.5),
-    color: colors.text,
+    color: '#000000',
     textAlign: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: '#F8F8F8',
   },
   continueButton: {
-    backgroundColor: colors.accent,
+    backgroundColor: '#1EB7A7',
     paddingVertical: hp(2),
     borderRadius: 15,
     alignItems: 'center',
   },
   continueButtonText: {
-    color: colors.white,
+    color: '#FFFFFF',
     fontSize: wp(4.5),
     fontWeight: '600',
   },
   disabledButton: {
-    backgroundColor: colors.textMuted,
+    backgroundColor: '#E0E0E0',
   },
   disabledButtonText: {
-    color: colors.textSecondary,
+    color: '#999999',
   },
 });
 
