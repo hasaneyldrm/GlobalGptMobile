@@ -56,8 +56,7 @@ const PaywallScreen = () => {
   const { width, height } = useWindowDimensions();
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedProduct, setSelectedProduct] = useState('3_monthly');
-  const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState('medium');
   
   const sliderRef = useRef<ScrollView>(null);
   const buzzAnimation = useRef(new Animated.Value(1)).current;
@@ -103,29 +102,29 @@ const PaywallScreen = () => {
     }
   ];
 
-  // Mock products data
-  const products = [
+  // Credit packages data
+  const creditPackages = [
     {
-      id: 'monthly',
-      title: 'Aylık Plan',
-      price: '₺49,99',
-      period: 'aylık',
-      description: 'Aylık abonelik'
+      id: 'small',
+      title: '100 Kredi',
+      price: '₺19,99',
+      credits: '100',
+      description: 'Küçük paket'
     },
     {
-      id: '3_monthly',
-      title: '3 Aylık Plan',
-      price: '₺99,99', 
-      period: '3 aylık',
-      description: '3 aylık abonelik',
+      id: 'medium',
+      title: '500 Kredi',
+      price: '₺79,99', 
+      credits: '500',
+      description: 'Orta paket',
       isBestChoice: true
     },
     {
-      id: 'yearly',
-      title: 'Yıllık Plan',
-      price: '₺199,99',
-      period: 'yıllık',
-      description: 'Yıllık abonelik'
+      id: 'large',
+      title: '1000 Kredi',
+      price: '₺149,99',
+      credits: '1000',
+      description: 'Büyük paket'
     }
   ];
 
@@ -293,14 +292,14 @@ const PaywallScreen = () => {
           ))}
         </View>
 
-        {/* Pricing Options */}
+        {/* Credit Packages */}
         <View style={styles.pricingContainer}>
-          {products.map((product) => {
-            const isSelected = selectedProduct === product.id;
+          {creditPackages.map((creditPackage) => {
+            const isSelected = selectedProduct === creditPackage.id;
             
             return (
               <TouchableOpacity
-                key={product.id}
+                key={creditPackage.id}
                 style={[
                   styles.priceCard,
                   { 
@@ -309,9 +308,9 @@ const PaywallScreen = () => {
                     borderWidth: isSelected ? 2 : 1,
                   }
                 ]}
-                onPress={() => setSelectedProduct(product.id)}
+                onPress={() => setSelectedProduct(creditPackage.id)}
               >
-                {product.isBestChoice && (
+                {creditPackage.isBestChoice && (
                   <View style={[styles.discountBadge, { backgroundColor: ourColors.primary }]}>
                     <Text style={[styles.discountText, { color: ourColors.buttonText }]}>
                       En Popüler
@@ -320,15 +319,15 @@ const PaywallScreen = () => {
                 )}
                 
                 <Text style={[styles.priceCardTitle, { color: ourColors.primary }]}>
-                  {product.title}
+                  {creditPackage.title}
                 </Text>
                 
                 <Text style={[styles.priceCardPrice, { color: ourColors.text }]}>
-                  {product.price}
+                  {creditPackage.price}
                 </Text>
                 
                 <Text style={[styles.priceCardPeriod, { color: ourColors.textSecondary }]}>
-                  {product.period}
+                  {creditPackage.credits} kredi
                 </Text>
               </TouchableOpacity>
             );
@@ -341,145 +340,9 @@ const PaywallScreen = () => {
           onPress={handleSubscribe}
         >
           <Text style={[styles.subscribeButtonText, { color: ourColors.buttonText }]}>
-            Aboneliği Başlat
+            Kredi Satın Al
           </Text>
         </TouchableOpacity>
-
-        {/* Testimonials */}
-        <View style={styles.testimonialsSection}>
-          <View style={styles.starRatingContainer}>
-            {[...Array(5)].map((_, i) => (
-              <View key={i} style={styles.starIcon}>
-                <Text style={styles.starText}>⭐</Text>
-              </View>
-            ))}
-          </View>
-          <Text style={[styles.sectionTitle, { color: ourColors.text, marginTop: 12 }]}>
-            Kullanıcı Yorumları
-          </Text>
-          <Text style={[styles.sectionSubtitle, { color: ourColors.textSecondary }]}>
-            Binlerce memnun kullanıcı
-          </Text>
-          
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
-            style={styles.testimonialsScrollView}
-            contentContainerStyle={{ paddingHorizontal: getResponsivePadding(20) }}
-          >
-            {[{
-              id: '1',
-              stars: 5,
-              title: 'Harika Uygulama!',
-              text: 'AI özellikler gerçekten çok kullanışlı. Özellikle analiz kısmı çok detaylı.',
-              author: 'Ahmet K.',
-            },
-            {
-              id: '2',
-              stars: 5,
-              title: 'Çok Memnunum',
-              text: 'Premium özellikler sayesinde çok daha verimli çalışabiliyorum.',
-              author: 'Elif Y.',
-            }].map(item => (
-              <View key={item.id} style={[styles.testimonialCard, { backgroundColor: ourColors.surface, borderColor: ourColors.border }]}>
-                 <Text style={[styles.testimonialTitle, { color: ourColors.text }]}>{item.title}</Text>
-                 <View style={styles.starRatingContainerSmall}>
-                    {[...Array(item.stars)].map((_, i) => (
-                      <View key={i} style={styles.starIconSmall}>
-                        <Text style={styles.starTextSmall}>⭐</Text>
-                      </View>
-                    ))}
-                 </View>
-                 <Text style={[styles.testimonialText, { color: ourColors.textSecondary }]}>{item.text}</Text>
-                 <Text style={[styles.testimonialAuthor, { color: ourColors.text }]}>{item.author}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* Comparison Section */}
-        <View style={styles.comparisonSection}>
-          <Text style={[styles.sectionTitle, { color: ourColors.text, marginBottom: getResponsivePadding(20) }]}>
-            Ücretsiz vs Premium
-          </Text>
-          <View style={styles.comparisonHeader}>
-            <Text style={[styles.comparisonHeaderText, { flex: 2 }]}></Text>
-            <Text style={[styles.comparisonHeaderText, { color: ourColors.textSecondary, textAlign: 'center' }]}>
-              Ücretsiz
-            </Text>
-            <Text style={[styles.comparisonHeaderText, { color: ourColors.primary, textAlign: 'center' }]}>
-              Premium
-            </Text>
-          </View>
-          {[
-            { feature: 'Temel AI Chat', free: '✓', pro: '✓' },
-            { feature: 'Günlük Mesaj Limiti', free: '10 mesaj', pro: '✓' },
-            { feature: 'AI Analiz Raporları', free: 'Sınırlı', pro: '✓' },
-            { feature: 'Premium Karakterler', free: '✗', pro: '✓' },
-          ].map((item, index) => (
-            <View key={index} style={[styles.comparisonRow, { borderBottomColor: ourColors.border }]}>
-              <Text style={[styles.comparisonFeature, { color: ourColors.text }]}>{item.feature}</Text>
-              <Text style={[styles.comparisonValue, { color: ourColors.textSecondary }]}>{item.free}</Text>
-              <Text style={[styles.comparisonValue, { color: ourColors.primary }]}>{item.pro}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* FAQ Section */}
-        <View style={styles.faqSection}>
-          <Text style={[styles.sectionTitle, { color: ourColors.text, marginBottom: getResponsivePadding(20) }]}>
-            Sıkça Sorulan Sorular
-          </Text>
-          {[
-            { q: 'Premium aboneliği iptal edebilir miyim?', a: 'Evet, istediğiniz zaman iptal edebilirsiniz.' },
-            { q: 'Hangi ödeme yöntemleri kabul ediliyor?', a: 'Kredi kartı, banka kartı ve mobil ödeme seçenekleri mevcuttur.' },
-            { q: 'Premium özellikler nelerdir?', a: 'Sınırsız mesaj, AI analiz, premium karakterler ve daha fazlası.' },
-          ].map((item, index) => (
-            <View key={index} style={[styles.faqItem, { backgroundColor: ourColors.surface }]}>
-              <TouchableOpacity 
-                style={styles.faqQuestion}
-                onPress={() => setExpandedFAQ(expandedFAQ === index ? null : index)}
-              >
-                <Text style={[styles.faqQuestionText, { color: ourColors.text }]}>{item.q}</Text>
-                <Text style={[styles.faqChevron, { color: ourColors.textSecondary }]}>
-                  {expandedFAQ === index ? '▲' : '▼'}
-                </Text>
-              </TouchableOpacity>
-              {expandedFAQ === index && (
-                <View style={styles.faqAnswer}>
-                  <Text style={[styles.faqAnswerText, { color: ourColors.textSecondary }]}>{item.a}</Text>
-                </View>
-              )}
-            </View>
-          ))}
-        </View>
-
-        {/* Support Contact */}
-        <View style={styles.supportSection}>
-          <Text style={[styles.supportQuestion, { color: ourColors.textSecondary }]}>
-            Başka sorunuz mu var?
-          </Text>
-          <Text style={[styles.supportEmail, { color: ourColors.primary }]}>
-            destek@globalgpt.com
-          </Text>
-        </View>
-
-        {/* Footer Links */}
-        <View style={styles.footerLinks}>
-          <TouchableOpacity>
-            <Text style={[styles.footerLink, { color: ourColors.primary }]}>
-              Gizlilik Politikası
-            </Text>
-          </TouchableOpacity>
-          <Text style={[styles.footerSeparator, { color: ourColors.textSecondary }]}>
-            {' • '}
-          </Text>
-          <TouchableOpacity>
-            <Text style={[styles.footerLink, { color: ourColors.primary }]}>
-              Kullanım Şartları
-            </Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -513,8 +376,8 @@ const styles = StyleSheet.create({
     paddingBottom: getResponsivePadding(40),
   },
   logoImage: {
-    width: getResponsiveSize(50),
-    height: getResponsiveSize(50),
+    width: getResponsiveSize(80),
+    height: getResponsiveSize(80),
     alignSelf: 'center',
     marginBottom: getResponsivePadding(20),
   },
@@ -684,157 +547,6 @@ const styles = StyleSheet.create({
     fontFamily: 'System',
     textAlign: 'center',
     marginTop: getResponsivePadding(4),
-  },
-  testimonialsSection: {
-    marginTop: getResponsivePadding(40),
-    alignItems: 'center',
-  },
-  starRatingContainer: {
-    flexDirection: 'row',
-  },
-  starIcon: {
-    marginHorizontal: getResponsivePadding(2),
-  },
-  starText: {
-    fontSize: getResponsiveSize(28),
-  },
-  testimonialsScrollView: {
-    marginTop: getResponsivePadding(20),
-    marginHorizontal: -getResponsivePadding(20),
-  },
-  testimonialCard: {
-    width: getResponsiveSize(280),
-    padding: getResponsivePadding(20),
-    borderRadius: getResponsiveSize(16),
-    marginRight: getResponsivePadding(12),
-    borderWidth: 1,
-  },
-  testimonialTitle: {
-    fontSize: getResponsiveSize(16),
-    fontFamily: 'System',
-    fontWeight: '700',
-  },
-  starRatingContainerSmall: {
-    flexDirection: 'row',
-    marginVertical: getResponsivePadding(8),
-  },
-  starIconSmall: {
-    marginRight: getResponsivePadding(2),
-  },
-  starTextSmall: {
-    fontSize: getResponsiveSize(18),
-  },
-  testimonialText: {
-    fontSize: getResponsiveSize(14),
-    fontFamily: 'System',
-    lineHeight: getResponsiveSize(20),
-    flex: 1,
-  },
-  testimonialAuthor: {
-    fontSize: getResponsiveSize(14),
-    fontFamily: 'System',
-    fontWeight: '600',
-    marginTop: getResponsivePadding(12),
-    textAlign: 'right',
-  },
-  comparisonSection: {
-    marginBottom: getResponsivePadding(40),
-  },
-  comparisonHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingBottom: getResponsivePadding(10),
-  },
-  comparisonHeaderText: {
-    flex: 1,
-    fontSize: getResponsiveSize(14),
-    fontFamily: 'System',
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  comparisonRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: getResponsivePadding(12),
-    borderBottomWidth: 1,
-  },
-  comparisonFeature: {
-    flex: 2,
-    fontSize: getResponsiveSize(15),
-    fontFamily: 'System',
-  },
-  comparisonValue: {
-    flex: 1,
-    fontSize: getResponsiveSize(16),
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  faqSection: {
-    marginBottom: getResponsivePadding(40),
-  },
-  faqItem: {
-    borderRadius: getResponsiveSize(16),
-    marginBottom: getResponsivePadding(12),
-    overflow: 'hidden',
-  },
-  faqQuestion: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: getResponsivePadding(20),
-  },
-  faqQuestionText: {
-    flex: 1,
-    fontSize: getResponsiveSize(15),
-    fontFamily: 'System',
-    fontWeight: '600',
-    paddingRight: getResponsivePadding(12),
-  },
-  faqChevron: {
-    fontSize: getResponsiveSize(14),
-    fontFamily: 'System',
-    fontWeight: '600',
-  },
-  faqAnswer: {
-    paddingHorizontal: getResponsivePadding(20),
-    paddingBottom: getResponsivePadding(20),
-    paddingTop: 0,
-  },
-  faqAnswerText: {
-    fontSize: getResponsiveSize(14),
-    fontFamily: 'System',
-    lineHeight: getResponsiveSize(20),
-  },
-  supportSection: {
-    alignItems: 'center',
-    marginBottom: getResponsivePadding(20),
-  },
-  supportQuestion: {
-    fontSize: getResponsiveSize(14),
-    fontFamily: 'System',
-    textAlign: 'center',
-    marginBottom: getResponsivePadding(4),
-  },
-  supportEmail: {
-    fontSize: getResponsiveSize(14),
-    fontFamily: 'System',
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  footerLinks: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  footerLink: {
-    fontSize: getResponsiveSize(14),
-    fontFamily: 'System',
-    fontWeight: '500',
-  },
-  footerSeparator: {
-    fontSize: getResponsiveSize(14),
-    fontFamily: 'System',
   },
 });
 
