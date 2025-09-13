@@ -59,8 +59,8 @@ const LoadingScreen: React.FC<Props> = ({ navigation }) => {
   ];
 
   const navigateToNext = () => {
-    // PaywallScreen'e git
-    console.log('Loading completed!');
+    // Her zaman PaywallScreen'e git
+    console.log('Loading completed - going to PaywallScreen');
     navigation?.navigate('Paywall');
   };
 

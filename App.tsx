@@ -16,6 +16,7 @@ import NameScreen from './src/onboarding/NameScreen';
 import ThemeScreen from './src/screens/ThemeScreen';
 import LoadingScreen from './src/screens/LoadingScreen';
 import PaywallScreen from './src/screens/PaywallScreen';
+import HomeScreen from './src/screens/HomeScreen';
 import { ThemeProvider } from './src/services/ThemeContext';
 import { colors } from './src/theme/colors';
 
@@ -42,6 +43,7 @@ function App() {
             <Stack.Screen name="Name" component={NameScreen} />
             <Stack.Screen name="Loading" component={LoadingScreen} />
             <Stack.Screen name="Paywall" component={PaywallScreen} />
+            <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name="Theme" component={ThemeScreen} />
           </Stack.Navigator>
         </NavigationContainer>

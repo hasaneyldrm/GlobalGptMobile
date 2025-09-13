@@ -80,6 +80,27 @@ const PaywallScreen = () => {
   
   const sliderRef = useRef<ScrollView>(null);
 
+  // Onboarding kontrolü - component mount olduğunda
+  useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      try {
+        const isOnboardingCompleted = await storage.getOnboardingCompleted();
+        if (isOnboardingCompleted) {
+          // Onboarding tamamlandıysa direkt HomeScreen'e git
+          console.log('Onboarding already completed - redirecting to HomeScreen');
+          (navigation as any).reset({
+            index: 0,
+            routes: [{ name: 'HomeScreen' }],
+          });
+        }
+      } catch (error) {
+        console.error('Onboarding kontrolü sırasında hata:', error);
+      }
+    };
+
+    checkOnboardingStatus();
+  }, [navigation]);
+
   // Colors - mevcut proje renklerini kullan
   const ourColors = {
     background: colors.background || '#FFFFFF',
