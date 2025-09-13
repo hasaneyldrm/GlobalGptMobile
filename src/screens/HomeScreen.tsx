@@ -69,14 +69,30 @@ const HomeScreen: React.FC = () => {
     },
     {
       id: '3',
-      title: 'AI Karakterler',
-      description: 'Farklı AI kişilikleri keşfet',
-      icon: '🎭',
-      color: '#10B981',
-      action: () => console.log('AI karakterler')
+      title: 'Jon Snow',
+      description: 'Kuzey\'in Kralı ile konuş',
+      icon: 'jonsnow',
+      color: '#475569',
+      action: () => console.log('Jon Snow')
     },
     {
       id: '4',
+      title: 'Cersei Lannister',
+      description: 'Kraliçe ile sohbet et',
+      icon: 'cersei',
+      color: '#DC2626',
+      action: () => console.log('Cersei')
+    },
+    {
+      id: '5',
+      title: 'Night King',
+      description: 'Gece Kralı\'nın gücü',
+      icon: 'nightking',
+      color: '#1E40AF',
+      action: () => console.log('Night King')
+    },
+    {
+      id: '6',
       title: 'Premium',
       description: 'Premium özellikleri keşfet',
       icon: '⭐',
@@ -126,9 +142,35 @@ const HomeScreen: React.FC = () => {
                 onPress={action.action}
                 activeOpacity={0.7}
               >
-                <View style={[styles.actionIcon, { backgroundColor: action.color + '15' }]}>
-                  <Text style={styles.actionEmoji}>{action.icon}</Text>
-                </View>
+                {action.icon === 'jonsnow' ? (
+                  <View style={styles.characterContainer}>
+                    <Image
+                      source={require('../assets/jonsnow.png')}
+                      style={styles.singleCharacterAvatar}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ) : action.icon === 'cersei' ? (
+                  <View style={styles.characterContainer}>
+                    <Image
+                      source={require('../assets/cersei.png')}
+                      style={styles.singleCharacterAvatar}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ) : action.icon === 'nightking' ? (
+                  <View style={styles.characterContainer}>
+                    <Image
+                      source={require('../assets/nightking.png')}
+                      style={styles.singleCharacterAvatar}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ) : (
+                  <View style={[styles.actionIcon, { backgroundColor: action.color + '15' }]}>
+                    <Text style={styles.actionEmoji}>{action.icon}</Text>
+                  </View>
+                )}
                 <Text style={styles.actionTitle}>{action.title}</Text>
                 <Text style={styles.actionDescription}>{action.description}</Text>
               </TouchableOpacity>
@@ -250,6 +292,20 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: wp(4.5),
+  },
+  characterContainer: {
+    width: wp(12),
+    height: wp(12),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: hp(1),
+  },
+  singleCharacterAvatar: {
+    width: wp(12),
+    height: wp(12),
+    borderRadius: wp(6),
+    borderWidth: 2,
+    borderColor: colors.surface,
   },
 });
 
