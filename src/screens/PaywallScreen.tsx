@@ -74,7 +74,7 @@ interface SlideData {
 
 const PaywallScreen = () => {
   const navigation = useNavigation();
-  const { addCredit } = useCredit();
+  const { addCredit, syncUserData } = useCredit();
   const { width, height } = useWindowDimensions();
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -208,6 +208,10 @@ const PaywallScreen = () => {
       // Hook ile kredi ekle (hem AsyncStorage hem Redux)
       await addCredit(creditAmount);
       
+      // Ödeme sonrası kullanıcı bilgilerini API'den senkronize et
+      console.log('Ödeme sonrası kullanıcı bilgileri senkronize ediliyor...');
+      await syncUserData();
+      
       // MainTabs'e git
       (navigation as any).reset({
         index: 0,
@@ -226,6 +230,10 @@ const PaywallScreen = () => {
       
       // Close durumunda da küçük bir kredi ver (100)
       await addCredit(100);
+      
+      // Close sonrası da kullanıcı bilgilerini senkronize et
+      console.log('Close sonrası kullanıcı bilgileri senkronize ediliyor...');
+      await syncUserData();
       
       // MainTabs'e git
       (navigation as any).reset({

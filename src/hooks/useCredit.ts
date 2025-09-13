@@ -82,11 +82,46 @@ export const useCredit = () => {
     }
   };
 
+  // API'den kullanıcı bilgilerini çek ve async storage'ı güncelle
+  const syncUserData = async () => {
+    try {
+      const userUUID = await storage.getUserUUID();
+      if (!userUUID) {
+        console.warn('UUID bulunamadı, senkronizasyon yapılamadı');
+        return false;
+      }
+
+      console.log('Kullanıcı bilgileri API\'den çekiliyor...');
+      const response = await userService.getUserInfo(userUUID);
+      
+      if (response.success && response.data) {
+        const { name, coin } = response.data;
+        
+        // AsyncStorage'ı güncelle
+        await storage.setUserName(name);
+        await storage.setUserCredit(coin);
+        
+        // Redux'ı güncelle
+        dispatch(setReduxCredit(coin));
+        
+        console.log(`Kullanıcı bilgileri senkronize edildi - İsim: ${name}, Coin: ${coin}`);
+        return true;
+      } else {
+        console.error('Kullanıcı bilgileri çekilemedi:', response.message);
+        return false;
+      }
+    } catch (error) {
+      console.error('Kullanıcı bilgileri senkronizasyonu hatası:', error);
+      return false;
+    }
+  };
+
   return {
     credit,
     setCredit,
     addCredit,
     subtractCredit,
     loadCredit,
+    syncUserData,
   };
 };

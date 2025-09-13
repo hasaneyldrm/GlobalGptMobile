@@ -9,6 +9,19 @@ interface CreditData {
   coin: number;
 }
 
+interface UserApiResponse {
+  success: boolean;
+  data?: {
+    uuid: string;
+    name: string;
+    coin: number;
+    project_id: number;
+    project_name: string;
+    created_at: string;
+  };
+  message?: string;
+}
+
 interface ApiResponse {
   success: boolean;
   message?: string;
@@ -142,7 +155,70 @@ class UserService {
       };
     }
   }
+
+  async getUserInfo(uuid: string): Promise<UserApiResponse> {
+    try {
+      console.log('Kullanıcı bilgileri çekiliyor:', `${this.baseUrl}/users/${uuid}`);
+      
+      const response = await fetch(`${this.baseUrl}/users/${uuid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Kullanıcı API Response status:', response.status);
+
+      // Response text'ini önce al
+      const responseText = await response.text();
+      console.log('Kullanıcı API Response text:', responseText);
+
+      // Eğer response başarılıysa JSON parse et
+      if (response.ok) {
+        try {
+          const data = JSON.parse(responseText);
+          if (data.success && data.data) {
+            return {
+              success: true,
+              data: data.data,
+            };
+          } else {
+            return {
+              success: false,
+              message: data.message || 'Kullanıcı bilgileri alınamadı',
+            };
+          }
+        } catch (parseError) {
+          console.error('Kullanıcı API JSON parse hatası:', parseError);
+          return {
+            success: false,
+            message: 'Server response formatı hatalı',
+          };
+        }
+      } else {
+        // Hata durumunda JSON parse etmeyi dene
+        try {
+          const errorData = JSON.parse(responseText);
+          return {
+            success: false,
+            message: errorData.message || 'Kullanıcı bulunamadı',
+          };
+        } catch (parseError) {
+          return {
+            success: false,
+            message: `API hatası: ${response.status}`,
+          };
+        }
+      }
+    } catch (error) {
+      console.error('Kullanıcı bilgileri API hatası:', error);
+      return {
+        success: false,
+        message: 'Ağ bağlantısı hatası',
+      };
+    }
+  }
 }
 
 export const userService = new UserService();
-export type { UserData, CreditData, ApiResponse };
+export type { UserData, CreditData, ApiResponse, UserApiResponse };

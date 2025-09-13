@@ -27,6 +27,7 @@ import { Provider } from 'react-redux';
 import { store } from './src/store';
 import { loadChatHistory } from './src/store/chatSlice';
 import { setUserCredit } from './src/store/creditSlice';
+import { userService } from './src/api/userService';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +53,35 @@ function App() {
         // Redux store'a krediyi yükle
         store.dispatch(setUserCredit(userCredit));
         console.log('Async storage\'dan kredi yüklendi:', userCredit);
+
+        // Kullanıcı bilgilerini API'den senkronize et (sadece onboarding tamamlanmışsa)
+        if (isOnboardingCompleted) {
+          try {
+            const userUUID = await storage.getUserUUID();
+            if (userUUID) {
+              console.log('Uygulama açılışında kullanıcı bilgileri senkronize ediliyor...');
+              const response = await userService.getUserInfo(userUUID);
+              
+              if (response.success && response.data) {
+                const { name, coin } = response.data;
+                
+                // AsyncStorage'ı güncelle
+                await storage.setUserName(name);
+                await storage.setUserCredit(coin);
+                
+                // Redux'ı güncelle
+                store.dispatch(setUserCredit(coin));
+                
+                console.log(`Uygulama açılışında senkronize edildi - İsim: ${name}, Coin: ${coin}`);
+              } else {
+                console.warn('Kullanıcı bilgileri senkronize edilemedi:', response.message);
+              }
+            }
+          } catch (syncError) {
+            console.error('Senkronizasyon hatası:', syncError);
+            // Senkronizasyon hatası olsa bile uygulamaya devam et
+          }
+        }
         
         if (isOnboardingCompleted) {
           // Onboarding tamamlandıysa direkt TabNavigator'a git
