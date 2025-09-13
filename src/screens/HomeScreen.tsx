@@ -132,7 +132,7 @@ const HomeScreen: React.FC = () => {
 
         {/* Quick Actions */}
         <View style={styles.actionsContainer}>
-          <Text style={styles.sectionTitle}>Hızlı İşlemler</Text>
+          <Text style={styles.sectionTitle}>En iyi AI Karakterler</Text>
           
           <View style={styles.actionsGrid}>
             {quickActions.map((action) => (
