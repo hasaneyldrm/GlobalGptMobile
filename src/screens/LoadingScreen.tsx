@@ -59,9 +59,9 @@ const LoadingScreen: React.FC<Props> = ({ navigation }) => {
   ];
 
   const navigateToNext = () => {
-    // Bir sonraki ekrana git
+    // PaywallScreen'e git
     console.log('Loading completed!');
-    // navigation?.navigate('NextScreen');
+    navigation?.navigate('Paywall');
   };
 
   useEffect(() => {
