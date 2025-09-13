@@ -26,6 +26,7 @@ import { storage } from './src/services/storage';
 import { Provider } from 'react-redux';
 import { store } from './src/store';
 import { loadChatHistory } from './src/store/chatSlice';
+import { setUserCredit } from './src/store/creditSlice';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,14 +39,19 @@ function App() {
         // Onboarding durumunu kontrol et
         const isOnboardingCompleted = await storage.getOnboardingCompleted();
         
-        // Chat verilerini yükle
-        const [contacts, chatHistories] = await Promise.all([
+        // Chat verilerini ve krediyi yükle
+        const [contacts, chatHistories, userCredit] = await Promise.all([
           storage.getChatContacts(),
-          storage.getChatHistory()
+          storage.getChatHistory(),
+          storage.getUserCredit()
         ]);
         
         // Redux store'a chat verilerini yükle
         store.dispatch(loadChatHistory({ contacts, chatHistories }));
+        
+        // Redux store'a krediyi yükle
+        store.dispatch(setUserCredit(userCredit));
+        console.log('Async storage\'dan kredi yüklendi:', userCredit);
         
         if (isOnboardingCompleted) {
           // Onboarding tamamlandıysa direkt TabNavigator'a git

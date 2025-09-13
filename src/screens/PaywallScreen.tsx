@@ -14,10 +14,9 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SvgXml } from 'react-native-svg';
-import { useDispatch } from 'react-redux';
-import { addUserCredit } from '../store/creditSlice';
 import { colors } from '../theme/colors';
 import { storage } from '../services/storage';
+import { useCredit } from '../hooks/useCredit';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -75,7 +74,7 @@ interface SlideData {
 
 const PaywallScreen = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
+  const { addCredit } = useCredit();
   const { width, height } = useWindowDimensions();
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -206,9 +205,8 @@ const PaywallScreen = () => {
           creditAmount = 500;
       }
       
-      // Redux store'a kredi ekle
-      dispatch(addUserCredit(creditAmount));
-      console.log(`Added ${creditAmount} credits`);
+      // Hook ile kredi ekle (hem AsyncStorage hem Redux)
+      await addCredit(creditAmount);
       
       // MainTabs'e git
       (navigation as any).reset({
@@ -227,8 +225,7 @@ const PaywallScreen = () => {
       console.log('Close tapped - Onboarding completed');
       
       // Close durumunda da küçük bir kredi ver (100)
-      dispatch(addUserCredit(100));
-      console.log('Added 100 credits for closing');
+      await addCredit(100);
       
       // MainTabs'e git
       (navigation as any).reset({

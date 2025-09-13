@@ -78,6 +78,13 @@ const LoadingScreen: React.FC<Props> = ({ navigation }) => {
         await storage.setUserUUID(userUUID);
         isNewUser = true;
         console.log('Yeni UUID oluşturuldu:', userUUID);
+        
+        // Yeni kullanıcıya varsayılan 100 kredi ver
+        const currentCredit = await storage.getUserCredit();
+        if (currentCredit === 0) {
+          await storage.setUserCredit(100);
+          console.log('Yeni kullanıcıya 100 kredi verildi');
+        }
       } else {
         console.log('Mevcut UUID bulundu:', userUUID);
       }

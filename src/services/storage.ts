@@ -8,6 +8,7 @@ class StorageService {
   private CHAT_HISTORY_KEY = '@GlobalGpt_chat_history';
   private USER_UUID_KEY = '@GlobalGpt_user_uuid';
   private USER_NAME_KEY = '@GlobalGpt_user_name';
+  private USER_CREDIT_KEY = '@GlobalGpt_user_credit';
 
   // Theme Storage
   async getTheme(): Promise<string | null> {
@@ -152,6 +153,52 @@ class StorageService {
       await AsyncStorage.setItem(this.USER_NAME_KEY, name);
     } catch (error) {
       console.error('Kullanıcı adı kaydedilirken hata:', error);
+      throw error;
+    }
+  }
+
+  // User Credit Storage
+  async getUserCredit(): Promise<number> {
+    try {
+      const credit = await AsyncStorage.getItem(this.USER_CREDIT_KEY);
+      return credit ? parseInt(credit, 10) : 0;
+    } catch (error) {
+      console.error('Kullanıcı kredisi yüklenirken hata:', error);
+      return 0;
+    }
+  }
+
+  async setUserCredit(credit: number): Promise<void> {
+    try {
+      await AsyncStorage.setItem(this.USER_CREDIT_KEY, credit.toString());
+    } catch (error) {
+      console.error('Kullanıcı kredisi kaydedilirken hata:', error);
+      throw error;
+    }
+  }
+
+  async addUserCredit(creditToAdd: number): Promise<number> {
+    try {
+      const currentCredit = await this.getUserCredit();
+      const newCredit = currentCredit + creditToAdd;
+      await this.setUserCredit(newCredit);
+      console.log(`Kredi eklendi: ${creditToAdd}, Toplam: ${newCredit}`);
+      return newCredit;
+    } catch (error) {
+      console.error('Kredi eklenirken hata:', error);
+      throw error;
+    }
+  }
+
+  async subtractUserCredit(creditToSubtract: number): Promise<number> {
+    try {
+      const currentCredit = await this.getUserCredit();
+      const newCredit = Math.max(0, currentCredit - creditToSubtract);
+      await this.setUserCredit(newCredit);
+      console.log(`Kredi çıkarıldı: ${creditToSubtract}, Kalan: ${newCredit}`);
+      return newCredit;
+    } catch (error) {
+      console.error('Kredi çıkarılırken hata:', error);
       throw error;
     }
   }
