@@ -52,20 +52,12 @@ const HomeScreen: React.FC = () => {
 
   const quickActions = [
     {
-      id: '1',
-      title: 'Yeni Sohbet',
-      description: 'AI ile yeni bir sohbet başlat',
-      icon: '💬',
-      color: colors.accent,
-      action: handleChatPress
-    },
-    {
       id: '2',
-      title: 'Geçmiş Sohbetler',
-      description: 'Önceki konuşmalarını görüntüle',
-      icon: '📚',
+      title: 'Teknasyon',
+      description: 'Teknoloji uzmanı ile konuş',
+      icon: 'teknasyon',
       color: '#8B5CF6',
-      action: () => console.log('Geçmiş sohbetler')
+      action: () => console.log('Teknasyon')
     },
     {
       id: '3',
@@ -93,11 +85,19 @@ const HomeScreen: React.FC = () => {
     },
     {
       id: '6',
-      title: 'Premium',
-      description: 'Premium özellikleri keşfet',
-      icon: '⭐',
-      color: '#F59E0B',
-      action: () => console.log('Premium')
+      title: 'Semih Kışlar',
+      description: 'Hackathon düşmanı danışman ile konuş',
+      icon: 'semih',
+      color: '#059669',
+      action: () => console.log('Semih')
+    },
+    {
+      id: '7',
+      title: 'Doruk',
+      description: 'Kuşadalı DJ, Sallantılı Developer ile konuş',
+      icon: 'doruk',
+      color: '#7C3AED',
+      action: () => console.log('Doruk')
     }
   ];
 
@@ -142,7 +142,15 @@ const HomeScreen: React.FC = () => {
                 onPress={action.action}
                 activeOpacity={0.7}
               >
-                {action.icon === 'jonsnow' ? (
+                {action.icon === 'teknasyon' ? (
+                  <View style={styles.characterContainer}>
+                    <Image
+                      source={require('../assets/teknasyon.png')}
+                      style={styles.singleCharacterAvatar}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ) : action.icon === 'jonsnow' ? (
                   <View style={styles.characterContainer}>
                     <Image
                       source={require('../assets/jonsnow.png')}
@@ -162,6 +170,22 @@ const HomeScreen: React.FC = () => {
                   <View style={styles.characterContainer}>
                     <Image
                       source={require('../assets/nightking.png')}
+                      style={styles.singleCharacterAvatar}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ) : action.icon === 'semih' ? (
+                  <View style={styles.characterContainer}>
+                    <Image
+                      source={require('../assets/semih.jpg')}
+                      style={styles.singleCharacterAvatar}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ) : action.icon === 'doruk' ? (
+                  <View style={styles.characterContainer}>
+                    <Image
+                      source={require('../assets/doruk.jpg')}
                       style={styles.singleCharacterAvatar}
                       resizeMode="contain"
                     />
