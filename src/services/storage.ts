@@ -1,8 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ChatContact, ChatHistory } from '../store/chatSlice';
 
 class StorageService {
   private THEME_KEY = '@GlobalGpt_theme';
   private ONBOARDING_KEY = '@GlobalGpt_onboarding_completed';
+  private CHAT_CONTACTS_KEY = '@GlobalGpt_chat_contacts';
+  private CHAT_HISTORY_KEY = '@GlobalGpt_chat_history';
 
   // Theme Storage
   async getTheme(): Promise<string | null> {
@@ -58,6 +61,55 @@ class StorageService {
       await AsyncStorage.removeItem(this.ONBOARDING_KEY);
     } catch (error) {
       console.error('Onboarding durumu silinirken hata:', error);
+      throw error;
+    }
+  }
+
+  // Chat Contacts Storage
+  async getChatContacts(): Promise<ChatContact[]> {
+    try {
+      const contacts = await AsyncStorage.getItem(this.CHAT_CONTACTS_KEY);
+      return contacts ? JSON.parse(contacts) : [];
+    } catch (error) {
+      console.error('Chat kişileri yüklenirken hata:', error);
+      return [];
+    }
+  }
+
+  async setChatContacts(contacts: ChatContact[]): Promise<void> {
+    try {
+      await AsyncStorage.setItem(this.CHAT_CONTACTS_KEY, JSON.stringify(contacts));
+    } catch (error) {
+      console.error('Chat kişileri kaydedilirken hata:', error);
+      throw error;
+    }
+  }
+
+  // Chat History Storage
+  async getChatHistory(): Promise<ChatHistory[]> {
+    try {
+      const history = await AsyncStorage.getItem(this.CHAT_HISTORY_KEY);
+      return history ? JSON.parse(history) : [];
+    } catch (error) {
+      console.error('Chat geçmişi yüklenirken hata:', error);
+      return [];
+    }
+  }
+
+  async setChatHistory(history: ChatHistory[]): Promise<void> {
+    try {
+      await AsyncStorage.setItem(this.CHAT_HISTORY_KEY, JSON.stringify(history));
+    } catch (error) {
+      console.error('Chat geçmişi kaydedilirken hata:', error);
+      throw error;
+    }
+  }
+
+  async clearChatData(): Promise<void> {
+    try {
+      await AsyncStorage.multiRemove([this.CHAT_CONTACTS_KEY, this.CHAT_HISTORY_KEY]);
+    } catch (error) {
+      console.error('Chat verileri silinirken hata:', error);
       throw error;
     }
   }
