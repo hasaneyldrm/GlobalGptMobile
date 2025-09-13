@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 import { colors } from '../theme/colors';
 
 const { width, height } = Dimensions.get('window');
@@ -27,8 +29,8 @@ const hp = (percentage: number) => {
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
   
-  // Credit state
-  const [userCredit, setUserCredit] = useState(250);
+  // Credit from Redux store
+  const userCredit = useSelector((state: RootState) => state.credit.userCredit);
 
   const handleChatPress = () => {
     console.log('Chat başlatıldı');

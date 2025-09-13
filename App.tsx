@@ -21,6 +21,8 @@ import TabNavigator from './src/navigation/TabNavigator';
 import { ThemeProvider } from './src/services/ThemeContext';
 import { colors } from './src/theme/colors';
 import { storage } from './src/services/storage';
+import { Provider } from 'react-redux';
+import { store } from './src/store';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,14 +56,15 @@ function App() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <StatusBar 
-          barStyle="light-content" 
-          backgroundColor={colors.background}
-          translucent={false}
-        />
-        <NavigationContainer>
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <ThemeProvider>
+          <StatusBar 
+            barStyle="light-content" 
+            backgroundColor={colors.background}
+            translucent={false}
+          />
+          <NavigationContainer>
           <Stack.Navigator 
             initialRouteName={initialRouteName}
             screenOptions={{
@@ -76,9 +79,10 @@ function App() {
             <Stack.Screen name="MainTabs" component={TabNavigator} />
             <Stack.Screen name="Theme" component={ThemeScreen} />
           </Stack.Navigator>
-        </NavigationContainer>
-      </ThemeProvider>
-    </SafeAreaProvider>
+          </NavigationContainer>
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </Provider>
   );
 }
 

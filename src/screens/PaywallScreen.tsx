@@ -14,6 +14,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SvgXml } from 'react-native-svg';
+import { useDispatch } from 'react-redux';
+import { addUserCredit } from '../store/creditSlice';
 import { colors } from '../theme/colors';
 import { storage } from '../services/storage';
 
@@ -73,6 +75,7 @@ interface SlideData {
 
 const PaywallScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const { width, height } = useWindowDimensions();
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -187,6 +190,26 @@ const PaywallScreen = () => {
       await storage.setOnboardingCompleted(true);
       console.log('Subscribe tapped - Onboarding completed');
       
+      // Seçilen pakete göre kredi ekle
+      let creditAmount = 0;
+      switch (selectedProduct) {
+        case 'small':
+          creditAmount = 100;
+          break;
+        case 'medium':
+          creditAmount = 500;
+          break;
+        case 'large':
+          creditAmount = 1000;
+          break;
+        default:
+          creditAmount = 500;
+      }
+      
+      // Redux store'a kredi ekle
+      dispatch(addUserCredit(creditAmount));
+      console.log(`Added ${creditAmount} credits`);
+      
       // MainTabs'e git
       (navigation as any).reset({
         index: 0,
@@ -202,6 +225,10 @@ const PaywallScreen = () => {
       // Onboarding'i tamamlandı olarak işaretle (kapatsa da tamamlanmış sayılsın)
       await storage.setOnboardingCompleted(true);
       console.log('Close tapped - Onboarding completed');
+      
+      // Close durumunda da küçük bir kredi ver (100)
+      dispatch(addUserCredit(100));
+      console.log('Added 100 credits for closing');
       
       // MainTabs'e git
       (navigation as any).reset({
