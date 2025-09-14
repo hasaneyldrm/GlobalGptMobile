@@ -21,6 +21,9 @@ import { addMessage } from '../store/chatSlice';
 import { colors } from '../theme/colors';
 import { storage } from '../services/storage';
 import { getAvatarSource } from '../utils/avatarUtils';
+import { userService } from '../api/userService';
+import { useDispatch as useReduxDispatch } from 'react-redux';
+import { setUserCredit } from '../store/creditSlice';
 
 const { width, height } = Dimensions.get('window');
 
@@ -66,6 +69,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
   
   const [inputText, setInputText] = useState('');
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Aktif contact ve mesajları bul
   const activeContact = contacts.find(c => c.id === contactId);
@@ -120,12 +124,17 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
     }
   };
 
-  const sendMessage = () => {
-    if (inputText.trim() === '') return;
+  const sendMessage = async () => {
+    if (inputText.trim() === '' || isLoading) return;
+    
+    const userMessageText = inputText.trim();
+    setInputText('');
+    setIsLoading(true);
 
+    // Kullanıcı mesajını hemen ekle
     const userMessage = {
       id: Date.now().toString(),
-      text: inputText.trim(),
+      text: userMessageText,
       isUser: true,
       timestamp: new Date().toISOString(),
     };
@@ -135,48 +144,103 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
       message: userMessage,
     }));
 
-    setInputText('');
-
-    // Simulate AI response
-    setTimeout(() => {
-      let aiMessage;
-
+    try {
       // Night King için özel durum - her zaman starring.jpg döndür
-      if (contactId === 'nightking') {
-        aiMessage = {
-          id: (Date.now() + 1).toString(),
-          text: '', // Boş text
-          isUser: false,
-          timestamp: new Date().toISOString(),
-          image: 'starring', // String identifier kullan
-          isImageOnly: true, // Sadece resim olduğunu belirt
-        };
-      } else {
-        // Diğer karakterler için normal AI response
-        const aiResponses = [
-          'Bu harika bir soru! Size yardımcı olmaya çalışayım.',
-          'Daha spesifik bilgi verebilir misiniz?',
-          'Tabii ki! Bu konuda size yardımcı olabilirim.',
-          'İlginç bir konu. Detayına inelim.',
-          'Başka sorularınız var mı?',
-          'Bu konuda daha fazla bilgi istiyorsanız, detaylandırabilirim.',
-        ];
+      if (contactId === 'nightking' || contactId === '8') {
+        setTimeout(() => {
+          const aiMessage = {
+            id: (Date.now() + 1).toString(),
+            text: '', // Boş text
+            isUser: false,
+            timestamp: new Date().toISOString(),
+            image: 'starring', // String identifier kullan
+            isImageOnly: true, // Sadece resim olduğunu belirt
+          };
 
-        const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-        
-        aiMessage = {
+          dispatch(addMessage({
+            contactId,
+            message: aiMessage,
+          }));
+          setIsLoading(false);
+        }, 1000);
+        return;
+      }
+
+      // User UUID'sini storage'dan al
+      const userUUID = await storage.getUserUUID();
+      if (!userUUID) {
+        throw new Error('User UUID bulunamadı');
+      }
+
+      // Gerçek AI karakterleri için API çağrısı
+      console.log('Chat API çağrısı yapılıyor:', {
+        message: userMessageText,
+        uuid: userUUID,
+        project_id: contactId
+      });
+
+      const response = await userService.sendChatMessage({
+        message: userMessageText,
+        uuid: userUUID,
+        project_id: contactId, // Character ID'sini project_id olarak kullan
+      });
+
+      console.log('Chat API response:', response);
+
+      if (response.success && 'data' in response) {
+        // AI response'u mesaj olarak ekle
+        const aiMessage = {
           id: (Date.now() + 1).toString(),
-          text: randomResponse,
+          text: response.message || 'Yanıt alınamadı',
           isUser: false,
           timestamp: new Date().toISOString(),
         };
+
+        dispatch(addMessage({
+          contactId,
+          message: aiMessage,
+        }));
+
+        // Kredi bilgisini güncelle (hem Redux hem AsyncStorage)
+        if (response.data.remaining_coins !== undefined) {
+          dispatch(setUserCredit(response.data.remaining_coins));
+          await storage.setUserCredit(response.data.remaining_coins);
+          console.log('Kredi güncellendi:', response.data.remaining_coins);
+        }
+
+        console.log('Chat başarılı - Tokens:', response.data.tokens_used, 'Model:', response.data.model);
+      } else {
+        // Hata durumunda fallback response
+        const errorMessage = {
+          id: (Date.now() + 1).toString(),
+          text: response.message || 'Üzgünüm, şu anda size yardımcı olamıyorum. Lütfen daha sonra tekrar deneyin.',
+          isUser: false,
+          timestamp: new Date().toISOString(),
+        };
+
+        dispatch(addMessage({
+          contactId,
+          message: errorMessage,
+        }));
       }
+    } catch (error) {
+      console.error('Chat API hatası:', error);
+      
+      // Network error fallback
+      const errorMessage = {
+        id: (Date.now() + 1).toString(),
+        text: 'Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.',
+        isUser: false,
+        timestamp: new Date().toISOString(),
+      };
 
       dispatch(addMessage({
         contactId,
-        message: aiMessage,
+        message: errorMessage,
       }));
-    }, 1000 + Math.random() * 2000); // 1-3 saniye arası rastgele gecikme
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderMessage = (message: any) => {
@@ -350,12 +414,14 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
           <TouchableOpacity
             style={[
               styles.sendButton,
-              { backgroundColor: inputText.trim() ? colors.accent : colors.secondary }
+              { backgroundColor: (inputText.trim() && !isLoading) ? colors.accent : colors.secondary }
             ]}
             onPress={sendMessage}
-            disabled={!inputText.trim()}
+            disabled={!inputText.trim() || isLoading}
           >
-            <Text style={styles.sendButtonText}>➤</Text>
+            <Text style={styles.sendButtonText}>
+              {isLoading ? '...' : '➤'}
+            </Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
