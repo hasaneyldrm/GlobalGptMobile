@@ -5,6 +5,8 @@ export interface Message {
   text: string;
   isUser: boolean;
   timestamp: string;
+  image?: any; // Resim mesajları için
+  isImageOnly?: boolean; // Sadece resim mesajı mı
 }
 
 export interface ChatContact {

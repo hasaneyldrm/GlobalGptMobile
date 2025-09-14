@@ -93,23 +93,38 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
 
     // Simulate AI response
     setTimeout(() => {
-      const aiResponses = [
-        'Bu harika bir soru! Size yardımcı olmaya çalışayım.',
-        'Daha spesifik bilgi verebilir misiniz?',
-        'Tabii ki! Bu konuda size yardımcı olabilirim.',
-        'İlginç bir konu. Detayına inelim.',
-        'Başka sorularınız var mı?',
-        'Bu konuda daha fazla bilgi istiyorsanız, detaylandırabilirim.',
-      ];
+      let aiMessage;
 
-      const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-      
-      const aiMessage = {
-        id: (Date.now() + 1).toString(),
-        text: randomResponse,
-        isUser: false,
-        timestamp: new Date().toISOString(),
-      };
+      // Night King için özel durum - her zaman starring.jpg döndür
+      if (contactId === 'nightking') {
+        aiMessage = {
+          id: (Date.now() + 1).toString(),
+          text: '', // Boş text
+          isUser: false,
+          timestamp: new Date().toISOString(),
+          image: require('../assets/starring.jpg'), // starring.jpg'yi döndür
+          isImageOnly: true, // Sadece resim olduğunu belirt
+        };
+      } else {
+        // Diğer karakterler için normal AI response
+        const aiResponses = [
+          'Bu harika bir soru! Size yardımcı olmaya çalışayım.',
+          'Daha spesifik bilgi verebilir misiniz?',
+          'Tabii ki! Bu konuda size yardımcı olabilirim.',
+          'İlginç bir konu. Detayına inelim.',
+          'Başka sorularınız var mı?',
+          'Bu konuda daha fazla bilgi istiyorsanız, detaylandırabilirim.',
+        ];
+
+        const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+        
+        aiMessage = {
+          id: (Date.now() + 1).toString(),
+          text: randomResponse,
+          isUser: false,
+          timestamp: new Date().toISOString(),
+        };
+      }
 
       dispatch(addMessage({
         contactId,
@@ -131,16 +146,30 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
           style={[
             styles.messageBubble,
             message.isUser ? styles.userBubble : styles.aiBubble,
+            message.isImageOnly && styles.imageBubble, // Resim mesajı için özel stil
           ]}
         >
-          <Text
-            style={[
-              styles.messageText,
-              message.isUser ? styles.userText : styles.aiText,
-            ]}
-          >
-            {message.text}
-          </Text>
+          {/* Eğer mesaj resim içeriyorsa resmi göster */}
+          {message.image && (
+            <Image
+              source={message.image}
+              style={styles.messageImage}
+              resizeMode="contain"
+            />
+          )}
+          
+          {/* Eğer text varsa göster (resim-only mesajlarda text boş) */}
+          {message.text && (
+            <Text
+              style={[
+                styles.messageText,
+                message.isUser ? styles.userText : styles.aiText,
+              ]}
+            >
+              {message.text}
+            </Text>
+          )}
+          
           <Text
             style={[
               styles.timestamp,
@@ -408,6 +437,17 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 5,
     borderWidth: 1,
     borderColor: colors.secondary,
+  },
+  imageBubble: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    padding: 0,
+  },
+  messageImage: {
+    width: wp(60),
+    height: wp(60),
+    borderRadius: 15,
+    marginBottom: hp(0.5),
   },
   messageText: {
     fontSize: wp(4),
