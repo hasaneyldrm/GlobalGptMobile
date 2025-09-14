@@ -16,6 +16,7 @@ import { RootState } from '../store';
 import { setActiveContact, loadChatHistory } from '../store/chatSlice';
 import { colors } from '../theme/colors';
 import { storage } from '../services/storage';
+import { getAvatarSource } from '../utils/avatarUtils';
 
 const { width, height } = Dimensions.get('window');
 
@@ -111,39 +112,9 @@ const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
         <View style={styles.avatarContainer}>
           {contact.avatar ? (
             <View style={styles.avatar}>
-              {contact.avatar === 'teknasyon' ? (
+              {getAvatarSource(contact.avatar) ? (
                 <Image
-                  source={require('../assets/teknasyon.png')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : contact.avatar === 'jonsnow' ? (
-                <Image
-                  source={require('../assets/jonsnow.png')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : contact.avatar === 'cersei' ? (
-                <Image
-                  source={require('../assets/cersei.png')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : contact.avatar === 'nightking' ? (
-                <Image
-                  source={require('../assets/nightking.png')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : contact.avatar === 'semih' ? (
-                <Image
-                  source={require('../assets/semih.jpg')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : contact.avatar === 'doruk' ? (
-                <Image
-                  source={require('../assets/doruk.jpg')}
+                  source={getAvatarSource(contact.avatar)}
                   style={styles.avatarImage}
                   resizeMode="contain"
                 />

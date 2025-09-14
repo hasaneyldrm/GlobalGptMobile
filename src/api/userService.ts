@@ -28,6 +28,24 @@ interface ApiResponse {
   data?: any;
 }
 
+interface ChatRequest {
+  message: string;
+  uuid: string;
+  project_id: string;
+}
+
+interface ChatResponse {
+  success: boolean;
+  message: string;
+  data: {
+    conversation_id: string;
+    tokens_used: number;
+    response_time: number;
+    remaining_coins: number;
+    model: string;
+  };
+}
+
 class UserService {
   private baseUrl = 'http://116.203.250.18:8050/api';
 
@@ -218,7 +236,73 @@ class UserService {
       };
     }
   }
+
+  async sendChatMessage(chatData: ChatRequest): Promise<ChatResponse | ApiResponse> {
+    try {
+      console.log('Chat API çağrısı yapılıyor:', `${this.baseUrl}/chat`);
+      console.log('Gönderilen chat data:', JSON.stringify(chatData));
+      
+      const response = await fetch(`${this.baseUrl}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(chatData),
+      });
+
+      console.log('Chat API Response status:', response.status);
+
+      // Response text'ini önce al
+      const responseText = await response.text();
+      console.log('Chat API Response text:', responseText);
+
+      // Eğer response başarılıysa JSON parse et
+      if (response.ok) {
+        try {
+          const data = JSON.parse(responseText);
+          if (data.success) {
+            return {
+              success: true,
+              message: data.message,
+              data: data.data,
+            };
+          } else {
+            return {
+              success: false,
+              message: data.message || 'Chat mesajı gönderilemedi',
+            };
+          }
+        } catch (parseError) {
+          console.error('Chat API JSON parse hatası:', parseError);
+          return {
+            success: false,
+            message: 'Chat response formatı hatalı',
+          };
+        }
+      } else {
+        // Hata durumunda JSON parse etmeyi dene
+        try {
+          const errorData = JSON.parse(responseText);
+          return {
+            success: false,
+            message: errorData.message || 'Chat mesajı gönderilemedi',
+          };
+        } catch (parseError) {
+          return {
+            success: false,
+            message: `Chat API hatası: ${response.status}`,
+          };
+        }
+      }
+    } catch (error) {
+      console.error('Chat API çağrısı hatası:', error);
+      return {
+        success: false,
+        message: 'Chat API ağ bağlantısı hatası',
+      };
+    }
+  }
 }
 
 export const userService = new UserService();
-export type { UserData, CreditData, ApiResponse, UserApiResponse };
+export type { UserData, CreditData, ApiResponse, UserApiResponse, ChatRequest, ChatResponse };

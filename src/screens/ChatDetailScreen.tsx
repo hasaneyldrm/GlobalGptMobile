@@ -20,6 +20,7 @@ import { RootState } from '../store';
 import { addMessage } from '../store/chatSlice';
 import { colors } from '../theme/colors';
 import { storage } from '../services/storage';
+import { getAvatarSource } from '../utils/avatarUtils';
 
 const { width, height } = Dimensions.get('window');
 
@@ -267,39 +268,9 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
         <View style={styles.headerContent}>
           {activeContact.avatar ? (
             <View style={styles.aiAvatar}>
-              {activeContact.avatar === 'teknasyon' ? (
+              {getAvatarSource(activeContact.avatar) ? (
                 <Image
-                  source={require('../assets/teknasyon.png')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : activeContact.avatar === 'jonsnow' ? (
-                <Image
-                  source={require('../assets/jonsnow.png')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : activeContact.avatar === 'cersei' ? (
-                <Image
-                  source={require('../assets/cersei.png')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : activeContact.avatar === 'nightking' ? (
-                <Image
-                  source={require('../assets/nightking.png')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : activeContact.avatar === 'semih' ? (
-                <Image
-                  source={require('../assets/semih.jpg')}
-                  style={styles.avatarImage}
-                  resizeMode="contain"
-                />
-              ) : activeContact.avatar === 'doruk' ? (
-                <Image
-                  source={require('../assets/doruk.jpg')}
+                  source={getAvatarSource(activeContact.avatar)}
                   style={styles.avatarImage}
                   resizeMode="contain"
                 />

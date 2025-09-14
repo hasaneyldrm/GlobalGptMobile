@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { addContact } from '../store/chatSlice';
 import { colors } from '../theme/colors';
+import { AI_CHARACTERS } from '../constants/aiCharacters';
 
 type RootStackParamList = {
   MainTabs: undefined;
@@ -64,56 +65,18 @@ const HomeScreen: React.FC = () => {
     }, 100);
   };
 
-  const quickActions = [
-    {
-      id: 'teknasyon',
-      title: 'Teknasyon',
-      description: 'Teknoloji uzmanı ile konuş',
-      icon: 'teknasyon',
-      color: '#8B5CF6',
-      action: () => handleCharacterPress('teknasyon', 'Teknasyon')
-    },
-    {
-      id: 'jonsnow',
-      title: 'Jon Snow',
-      description: 'Kuzey\'in Kralı ile konuş',
-      icon: 'jonsnow',
-      color: '#475569',
-      action: () => handleCharacterPress('jonsnow', 'Jon Snow')
-    },
-    {
-      id: 'cersei',
-      title: 'Cersei Lannister',
-      description: 'Kraliçe ile sohbet et',
-      icon: 'cersei',
-      color: '#DC2626',
-      action: () => handleCharacterPress('cersei', 'Cersei Lannister')
-    },
-    {
-      id: 'nightking',
-      title: 'Night King',
-      description: 'Gece Kralı\'nın gücü',
-      icon: 'nightking',
-      color: '#1E40AF',
-      action: () => handleCharacterPress('nightking', 'Night King')
-    },
-    {
-      id: 'semih',
-      title: 'Semih Kışlar',
-      description: 'Hackathon düşmanı danışman ile konuş',
-      icon: 'semih',
-      color: '#059669',
-      action: () => handleCharacterPress('semih', 'Semih Kışlar')
-    },
-    {
-      id: 'doruk',
-      title: 'Doruk',
-      description: 'Kuşadalı DJ, Sallantılı Developer ile konuş',
-      icon: 'doruk',
-      color: '#7C3AED',
-      action: () => handleCharacterPress('doruk', 'Doruk')
-    }
-  ];
+  // AI karakterlerini constants'tan al ve quickActions formatına çevir
+  const quickActions = AI_CHARACTERS.map((character, index) => {
+    const colors = ['#8B5CF6', '#475569', '#DC2626', '#1E40AF', '#059669', '#7C3AED'];
+    return {
+      id: character.id,
+      title: character.name,
+      description: character.description,
+      image: character.image,
+      color: colors[index % colors.length],
+      action: () => handleCharacterPress(character.id, character.name)
+    };
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -156,59 +119,13 @@ const HomeScreen: React.FC = () => {
                 onPress={action.action}
                 activeOpacity={0.7}
               >
-                {action.icon === 'teknasyon' ? (
-                  <View style={styles.characterContainer}>
-                    <Image
-                      source={require('../assets/teknasyon.png')}
-                      style={styles.singleCharacterAvatar}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ) : action.icon === 'jonsnow' ? (
-                  <View style={styles.characterContainer}>
-                    <Image
-                      source={require('../assets/jonsnow.png')}
-                      style={styles.singleCharacterAvatar}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ) : action.icon === 'cersei' ? (
-                  <View style={styles.characterContainer}>
-                    <Image
-                      source={require('../assets/cersei.png')}
-                      style={styles.singleCharacterAvatar}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ) : action.icon === 'nightking' ? (
-                  <View style={styles.characterContainer}>
-                    <Image
-                      source={require('../assets/nightking.png')}
-                      style={styles.singleCharacterAvatar}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ) : action.icon === 'semih' ? (
-                  <View style={styles.characterContainer}>
-                    <Image
-                      source={require('../assets/semih.jpg')}
-                      style={styles.singleCharacterAvatar}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ) : action.icon === 'doruk' ? (
-                  <View style={styles.characterContainer}>
-                    <Image
-                      source={require('../assets/doruk.jpg')}
-                      style={styles.singleCharacterAvatar}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ) : (
-                  <View style={[styles.actionIcon, { backgroundColor: action.color + '15' }]}>
-                    <Text style={styles.actionEmoji}>{action.icon}</Text>
-                  </View>
-                )}
+                <View style={styles.characterContainer}>
+                  <Image
+                    source={action.image}
+                    style={styles.singleCharacterAvatar}
+                    resizeMode="contain"
+                  />
+                </View>
                 <Text style={styles.actionTitle}>{action.title}</Text>
                 <Text style={styles.actionDescription}>{action.description}</Text>
               </TouchableOpacity>
