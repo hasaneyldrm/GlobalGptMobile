@@ -7,19 +7,19 @@ export const getAvatarSource = (avatarId: string | number) => {
     case '5':
     case 'teknasyon':
       return require('@/assets/teknasyon.png');
-    case '6':
+    case '8':
     case 'jonsnow':
       return require('@/assets/jonsnow.png');
-    case '7':
+    case '10':
     case 'cersei':
       return require('@/assets/cersei.png');
-    case '8':
+    case '9':
     case 'nightking':
       return require('@/assets/nightking.png');
-    case '9':
+    case '11':
     case 'semih':
       return require('@/assets/semih.jpg');
-    case '10':
+    case '12':
     case 'doruk':
       return require('@/assets/doruk.jpg');
     default:
@@ -35,19 +35,19 @@ export const getCharacterName = (avatarId: string | number) => {
     case '5':
     case 'teknasyon':
       return 'Teknasyon';
-    case '6':
+    case '8':
     case 'jonsnow':
       return 'Jon Snow';
-    case '7':
+    case '10':
     case 'cersei':
       return 'Cersei Lannister';
-    case '8':
+    case '9':
     case 'nightking':
       return 'Night King';
-    case '9':
+    case '11':
     case 'semih':
       return 'Semih Kışlar';
-    case '10':
+    case '12':
     case 'doruk':
       return 'Doruk';
     default:

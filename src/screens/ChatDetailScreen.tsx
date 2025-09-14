@@ -146,7 +146,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
 
     try {
       // Night King için özel durum - her zaman starring.jpg döndür
-      if (contactId === 'nightking' || contactId === '8') {
+      if (contactId === 'nightking' || contactId === '9') {
         setTimeout(() => {
           const aiMessage = {
             id: (Date.now() + 1).toString(),
