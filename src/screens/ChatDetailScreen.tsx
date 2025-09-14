@@ -12,6 +12,7 @@ import {
   Platform,
   Dimensions,
   Image,
+  Keyboard,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector, useDispatch } from 'react-redux';
@@ -63,6 +64,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
   const { contacts, chatHistories, activeContactId } = useSelector((state: RootState) => state.chat);
   
   const [inputText, setInputText] = useState('');
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   
   // Aktif contact ve mesajları bul
   const activeContact = contacts.find(c => c.id === contactId);
@@ -75,6 +77,31 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
       scrollViewRef.current?.scrollToEnd({ animated: true });
     }, 100);
   }, [messages]);
+
+  useEffect(() => {
+    // Klavye event listener'ları ekle
+    const keyboardWillShow = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (e) => {
+        setKeyboardHeight(e.endCoordinates.height);
+        setTimeout(() => {
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+        }, 100);
+      }
+    );
+    
+    const keyboardWillHide = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0);
+      }
+    );
+
+    return () => {
+      keyboardWillShow.remove();
+      keyboardWillHide.remove();
+    };
+  }, []);
 
   useEffect(() => {
     // Save chat data when messages change
@@ -305,7 +332,13 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
         ref={scrollViewRef}
         style={styles.messagesContainer}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.messagesContent, { paddingBottom: 90 + insets.bottom }]}
+        contentContainerStyle={[
+          styles.messagesContent, 
+          { 
+            paddingBottom: Math.max(90 + insets.bottom, keyboardHeight > 0 ? keyboardHeight + 90 : 90 + insets.bottom)
+          }
+        ]}
+        keyboardShouldPersistTaps="handled"
       >
         {messages.length === 0 ? (
           <View style={styles.emptyState}>
@@ -323,7 +356,14 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
       {/* Input Area */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={[styles.inputContainer, { bottom: insets.bottom + 80 }]} // Tab bar height + safe area
+        style={[
+          styles.inputContainer, 
+          { 
+            bottom: keyboardHeight > 0 
+              ? (Platform.OS === 'ios' ? 0 : insets.bottom + 80)
+              : insets.bottom + 80
+          }
+        ]}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <View style={styles.inputRow}>
@@ -445,10 +485,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   messageBubble: {
-    maxWidth: wp(80),
-    paddingHorizontal: wp(4),
-    paddingVertical: hp(1.5),
-    borderRadius: 20,
+    maxWidth: wp(85),
+    paddingHorizontal: wp(3.5),
+    paddingVertical: hp(1.2),
+    borderRadius: 18,
+    minWidth: wp(20),
   },
   userBubble: {
     backgroundColor: colors.accent,
@@ -466,11 +507,10 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   messageImage: {
-    width: wp(50),
-    height: wp(50), // Kare yapalım
+    width: wp(60),
+    height: wp(60),
     borderRadius: 15,
     marginBottom: hp(0.5),
-    backgroundColor: '#333', // Debug için background color
   },
   messageText: {
     fontSize: wp(4),
