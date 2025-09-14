@@ -5,7 +5,7 @@ export interface Message {
   text: string;
   isUser: boolean;
   timestamp: string;
-  image?: any; // Resim mesajları için
+  image?: string | any; // Resim mesajları için (string identifier veya require objesi)
   isImageOnly?: boolean; // Sadece resim mesajı mı
 }
 
@@ -65,7 +65,8 @@ const chatSlice = createSlice({
       // Contact'ın son mesajını güncelle
       const contact = state.contacts.find(c => c.id === contactId);
       if (contact) {
-        contact.lastMessage = message.text;
+        // Eğer resim mesajıysa "📸 Resim" göster, değilse text'i göster
+        contact.lastMessage = message.isImageOnly ? '📸 Resim' : message.text;
         contact.lastMessageTime = message.timestamp;
         
         // Eğer aktif contact değilse, okunmamış mesaj sayısını artır

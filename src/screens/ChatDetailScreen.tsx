@@ -36,6 +36,24 @@ interface ChatDetailScreenProps {
   route: any;
 }
 
+// Resim source'unu string identifier'dan çeviren fonksiyon
+const getImageSource = (imageIdentifier: string | any) => {
+  console.log('getImageSource çağrıldı:', imageIdentifier, typeof imageIdentifier);
+  
+  if (typeof imageIdentifier === 'string') {
+    switch (imageIdentifier) {
+      case 'starring':
+        console.log('Starring resmi yükleniyor...');
+        return require('../assets/starring.jpg');
+      default:
+        console.log('Bilinmeyen resim identifier:', imageIdentifier);
+        return null;
+    }
+  }
+  console.log('Direkt require objesi döndürülüyor');
+  return imageIdentifier; // Eğer zaten require() objesi ise direkt döndür
+};
+
 const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const scrollViewRef = useRef<ScrollView>(null);
@@ -102,7 +120,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
           text: '', // Boş text
           isUser: false,
           timestamp: new Date().toISOString(),
-          image: require('../assets/starring.jpg'), // starring.jpg'yi döndür
+          image: 'starring', // String identifier kullan
           isImageOnly: true, // Sadece resim olduğunu belirt
         };
       } else {
@@ -152,9 +170,13 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
           {/* Eğer mesaj resim içeriyorsa resmi göster */}
           {message.image && (
             <Image
-              source={message.image}
+              source={getImageSource(message.image)}
               style={styles.messageImage}
-              resizeMode="contain"
+              resizeMode="cover"
+              onLoad={() => console.log('Resim yüklendi başarıyla')}
+              onError={(error) => console.error('Resim yükleme hatası:', error.nativeEvent)}
+              onLoadStart={() => console.log('Resim yüklenmeye başladı')}
+              onLoadEnd={() => console.log('Resim yükleme tamamlandı')}
             />
           )}
           
@@ -444,10 +466,11 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   messageImage: {
-    width: wp(60),
-    height: wp(60),
+    width: wp(50),
+    height: wp(50), // Kare yapalım
     borderRadius: 15,
     marginBottom: hp(0.5),
+    backgroundColor: '#333', // Debug için background color
   },
   messageText: {
     fontSize: wp(4),
