@@ -370,7 +370,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ navigation, route }
         contentContainerStyle={[
           styles.messagesContent, 
           { 
-            paddingBottom: Math.max(90 + insets.bottom, keyboardHeight > 0 ? keyboardHeight + 90 : 90 + insets.bottom)
+            paddingBottom: keyboardHeight > 0 ? keyboardHeight + 20 : 180 + insets.bottom
           }
         ]}
         keyboardShouldPersistTaps="handled"
